@@ -1,8 +1,8 @@
 editors:
   - version: 2019.3
-    cmd: -u 2019.3/staging
+    cmd: -u assetpipeline/fix-scriptcompilationpipeline-assetpipeline-init
   - version: fast-2019.3
-    cmd: -u 2019.3/staging --fast
+    cmd: -u assetpipeline/fix-scriptcompilationpipeline-assetpipeline-init --fast
 platforms:
   - name: Windows64
     type: Unity::VM::GPU
