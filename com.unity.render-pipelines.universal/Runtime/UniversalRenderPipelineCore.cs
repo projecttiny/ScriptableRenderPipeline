@@ -85,6 +85,7 @@ namespace UnityEngine.Rendering.Universal
         public bool supportsSoftShadows;
         public int shadowmapDepthBufferBits;
         public List<Vector4> bias;
+        public bool shadowTransparentReceiveSupported;
     }
 
     public struct PostProcessingData

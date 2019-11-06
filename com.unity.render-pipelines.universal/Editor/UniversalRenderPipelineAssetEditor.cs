@@ -52,6 +52,7 @@ namespace UnityEditor.Rendering.Universal
             public static GUIContent shadowCascadesText = EditorGUIUtility.TrTextContent("Cascades", "Number of cascade splits used in for directional shadows");
             public static GUIContent shadowDepthBias = EditorGUIUtility.TrTextContent("Depth Bias", "Controls the distance at which the shadows will be pushed away from the light. Useful for avoiding false self-shadowing artifacts.");
             public static GUIContent shadowNormalBias = EditorGUIUtility.TrTextContent("Normal Bias", "Controls distance at which the shadow casting surfaces will be shrunk along the surface normal. Useful for avoiding false self-shadowing artifacts.");
+            public static GUIContent shadowTransparentReceiveShadowsText = EditorGUIUtility.TrTextContent("Transparent Receive Shadows", "When disabled, none of the transparent objects will receive shadows.");
             public static GUIContent supportsSoftShadows = EditorGUIUtility.TrTextContent("Soft Shadows", "If enabled pipeline will perform shadow filtering. Otherwise all lights that cast shadows will fallback to perform a single shadow sample.");
 
             // Post-processing
@@ -119,6 +120,7 @@ namespace UnityEditor.Rendering.Universal
         SerializedProperty m_ShadowCascade4SplitProp;
         SerializedProperty m_ShadowDepthBiasProp;
         SerializedProperty m_ShadowNormalBiasProp;
+        SerializedProperty m_ShadowTransparentReceiveSupportedProp;
 
         SerializedProperty m_SoftShadowsSupportedProp;
 
@@ -186,6 +188,7 @@ namespace UnityEditor.Rendering.Universal
             m_ShadowCascade4SplitProp = serializedObject.FindProperty("m_Cascade4Split");
             m_ShadowDepthBiasProp = serializedObject.FindProperty("m_ShadowDepthBias");
             m_ShadowNormalBiasProp = serializedObject.FindProperty("m_ShadowNormalBias");
+            m_ShadowTransparentReceiveSupportedProp = serializedObject.FindProperty("m_ShadowTransparentReceiveSupported");
             m_SoftShadowsSupportedProp = serializedObject.FindProperty("m_SoftShadowsSupported");
 
             m_SRPBatcher = serializedObject.FindProperty("m_UseSRPBatcher");
@@ -329,6 +332,7 @@ namespace UnityEditor.Rendering.Universal
                 m_ShadowDepthBiasProp.floatValue = EditorGUILayout.Slider(Styles.shadowDepthBias, m_ShadowDepthBiasProp.floatValue, 0.0f, UniversalRenderPipeline.maxShadowBias);
                 m_ShadowNormalBiasProp.floatValue = EditorGUILayout.Slider(Styles.shadowNormalBias, m_ShadowNormalBiasProp.floatValue, 0.0f, UniversalRenderPipeline.maxShadowBias);
                 EditorGUILayout.PropertyField(m_SoftShadowsSupportedProp, Styles.supportsSoftShadows);
+                EditorGUILayout.PropertyField(m_ShadowTransparentReceiveSupportedProp, Styles.shadowTransparentReceiveShadowsText);
                 EditorGUI.indentLevel--;
                 EditorGUILayout.Space();
                 EditorGUILayout.Space();

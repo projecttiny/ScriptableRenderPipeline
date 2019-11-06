@@ -81,13 +81,14 @@ namespace UnityEngine.Rendering.Universal
 
             // Main bulk of render pass execution. They required camera state to be properly set
             // and when enabled they will render in stereo.
-            public static readonly int MainRendering = 1;
+            public static readonly int MainRenderingOpaque = 1;
+            public static readonly int MainRenderingTransparent = 2;
 
             // Execute after Post-processing.
-            public static readonly int AfterRendering = 2;
+            public static readonly int AfterRendering = 3;
         }
 
-        const int k_RenderPassBlockCount = 3;
+        const int k_RenderPassBlockCount = 4;
 
         List<ScriptableRenderPass> m_ActiveRenderPassQueue = new List<ScriptableRenderPass>(32);
         List<ScriptableRendererFeature> m_RendererFeatures = new List<ScriptableRendererFeature>(10);
@@ -188,7 +189,12 @@ namespace UnityEngine.Rendering.Universal
         public void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             Camera camera = renderingData.cameraData.camera;
-            SetCameraRenderState(context, ref renderingData.cameraData);
+
+            CommandBuffer cmd = CommandBufferPool.Get(k_SetCameraRenderStateTag);
+            SetCameraRenderState(cmd, ref renderingData.cameraData);
+            context.ExecuteCommandBuffer(cmd);
+            cmd.Clear();
+            
 
             SortStable(m_ActiveRenderPassQueue);
 
@@ -208,7 +214,8 @@ namespace UnityEngine.Rendering.Universal
             // Upper limits for each block. Each block will contains render passes with events below the limit.
             NativeArray<RenderPassEvent> blockEventLimits = new NativeArray<RenderPassEvent>(k_RenderPassBlockCount, Allocator.Temp);
             blockEventLimits[RenderPassBlock.BeforeRendering] = RenderPassEvent.BeforeRenderingPrepasses;
-            blockEventLimits[RenderPassBlock.MainRendering] = RenderPassEvent.AfterRenderingPostProcessing;
+            blockEventLimits[RenderPassBlock.MainRenderingOpaque] = RenderPassEvent.AfterRenderingOpaques;
+            blockEventLimits[RenderPassBlock.MainRenderingTransparent] = RenderPassEvent.AfterRenderingPostProcessing;
             blockEventLimits[RenderPassBlock.AfterRendering] = (RenderPassEvent)Int32.MaxValue;
 
             NativeArray<int> blockRanges = new NativeArray<int>(blockEventLimits.Length + 1, Allocator.Temp);
@@ -249,8 +256,19 @@ namespace UnityEngine.Rendering.Universal
             CommandBufferPool.Release(localCmd);
 #endif
 
-            // In this block main rendering executes.
-            ExecuteBlock(RenderPassBlock.MainRendering, blockRanges, context, ref renderingData);
+            // In the opaque and transparent blocks the main rendering executes.
+            ExecuteBlock(RenderPassBlock.MainRenderingOpaque, blockRanges, context, ref renderingData);
+
+            // Set the shadow settings before rendering transparent objects
+            CoreUtils.SetKeyword(cmd, ShaderKeywordStrings.MainLightShadows, renderingData.shadowData.shadowTransparentReceiveSupported);
+            CoreUtils.SetKeyword(cmd, ShaderKeywordStrings.MainLightShadowCascades, false);
+            context.ExecuteCommandBuffer(cmd);
+            cmd.Clear();
+            CommandBufferPool.Release(cmd);
+
+            ExecuteBlock(RenderPassBlock.MainRenderingTransparent, blockRanges, context, ref renderingData);
+
+
 
             DrawGizmos(context, camera, GizmoSubset.PreImageEffects);
 
@@ -322,10 +340,9 @@ namespace UnityEngine.Rendering.Universal
 
         // Initialize Camera Render State
         // Place all per-camera rendering logic that is generic for all types of renderers here.
-        void SetCameraRenderState(ScriptableRenderContext context, ref CameraData cameraData)
+        void SetCameraRenderState(CommandBuffer cmd, ref CameraData cameraData)
         {
             // Reset per-camera shader keywords. They are enabled depending on which render passes are executed.
-            CommandBuffer cmd = CommandBufferPool.Get(k_SetCameraRenderStateTag);
             cmd.DisableShaderKeyword(ShaderKeywordStrings.MainLightShadows);
             cmd.DisableShaderKeyword(ShaderKeywordStrings.MainLightShadowCascades);
             cmd.DisableShaderKeyword(ShaderKeywordStrings.AdditionalLightsVertex);
@@ -336,8 +353,6 @@ namespace UnityEngine.Rendering.Universal
 
             // Required by VolumeSystem / PostProcessing.
             VolumeManager.instance.Update(cameraData.volumeTrigger, cameraData.volumeLayerMask);
-            context.ExecuteCommandBuffer(cmd);
-            CommandBufferPool.Release(cmd);
         }
 
         internal void Clear()
