@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added the option to strip Terrain hole Shader variants.
 - Added support for additional Directional Lights. The amount of additional Directional Lights is limited by the maximum Per-object Lights in the Render Pipeline Asset.
 - Added default implementations of OnPreprocessMaterialDescription for FBX, Obj, Sketchup and 3DS file formats.
+- Added the option to toggle shadow receiving on transparent objects.
 
 ### Changed
 - Moved the icon that indicates the type of a Light 2D from the Inspector header to the Light Type field.
@@ -31,6 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed user LUT sampling being done in Linear instead of sRGB.
 - Fixed an issue when trying to get the Renderer via API on the first frame [case 1189196](https://issuetracker.unity3d.com/product/unity/issues/guid/1189196/)
 - Fixed a material leak on domain reload.
+- Fixed an issue with transparent objects not receiving shadows when using shadow cascades. [case 1116936] (https://issuetracker.unity3d.com/issues/lwrp-cascaded-shadows-do-not-appear-on-alpha-blended-objects)
 
 ## [7.1.1] - 2019-09-05
 ### Upgrade Guide
