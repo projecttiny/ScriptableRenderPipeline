@@ -287,6 +287,17 @@ namespace UnityEditor.VFX.UI
         SelectionDragger m_SelectionDragger;
         RectangleSelector m_RectangleSelector;
 
+        public void OnCreateAsset()
+        {
+            string filePath = EditorUtility.SaveFilePanelInProject("", "New Graph", "vfx", "Create new VisualEffect Graph");
+            if( !string.IsNullOrEmpty(filePath))
+            {
+                VisualEffectAssetEditorUtility.CreateNewAsset(filePath);
+
+                VFXViewWindow.currentWindow.LoadAsset(AssetDatabase.LoadAssetAtPath<VisualEffectAsset>(filePath), null);
+            }
+        }
+
         public VFXView()
         {
             SetupZoom(0.125f, 8);
@@ -370,7 +381,7 @@ namespace UnityEditor.VFX.UI
 
             // End Toolbar
 
-            m_NoAssetLabel = new Label("Please Open An Asset");
+            m_NoAssetLabel = new Label("Please Open An Asset") { name = "no-asset"};
             m_NoAssetLabel.style.position = PositionType.Absolute;
             m_NoAssetLabel.style.left = 0f;
             m_NoAssetLabel.style.right = new StyleLength(0f);
@@ -381,6 +392,11 @@ namespace UnityEditor.VFX.UI
             m_NoAssetLabel.style.color = Color.white * 0.75f;
 
             Add(m_NoAssetLabel);
+
+
+            var createButton = new Button() { text = "Create Graph" };
+            m_NoAssetLabel.Add(createButton);
+            createButton.clicked += OnCreateAsset;
 
             m_LockedElement = new Label("Asset is Locked");
             m_LockedElement.style.position = PositionType.Absolute;
@@ -1770,7 +1786,19 @@ namespace UnityEditor.VFX.UI
                     evt.menu.InsertAction(3, "Convert to Subgraph Block", ToSubgraphBlock, e => DropdownMenuAction.Status.Normal);
                 }
             }
+                if (selection.OfType<VFXOperatorUI>().Any(t => !t.superCollapsed))
+                    evt.menu.AppendAction("Collapse Operators", CollapseOperator, e => DropdownMenuAction.Status.Normal, true);
+                if (selection.OfType<VFXOperatorUI>().Any(t => t.superCollapsed))
+                    evt.menu.AppendAction("Uncollapse Operators", CollapseOperator, e => DropdownMenuAction.Status.Normal, false);
 
+        }
+
+        void CollapseOperator(DropdownMenuAction a)
+        {
+            bool collapse = (bool)a.userData;
+
+            foreach (var ope in selection.OfType<VFXOperatorUI>())
+                ope.controller.superCollapsed = collapse;
         }
 
 
