@@ -18778,8 +18778,7 @@ VisualEffectResource:
       VFX_PASSDEPTH == VFX_PASSDEPTH_MOTION_VECTOR\n\t\t\t\tfloat4 cPosPrevious :
       TEXCOORD3;\n\t\t\t\tfloat4 cPosNonJiterred : TEXCOORD4;\n\t\t\t\t#endif\n\t\t\t   
       \n\t\t\t    #if VFX_NEEDS_POSWS_INTERPOLATOR\n\t\t\t    float3 posWS : TEXCOORD5;\n\t\t\t   
-      #endif\n\t\t\t    nointerpolation float initialAlpha : NORMAL0;\n\t\t\t   
-      \n\n\t\t\t\t\n\t\t\t\tUNITY_VERTEX_OUTPUT_STEREO\n\t\t\t};\n\t\t\t\n\t\t\t#define
+      #endif\n\t\t\t    nointerpolation float alphaOffset : NORMAL0;\n\t\t\t    \n\n\t\t\t\t\n\t\t\t\tUNITY_VERTEX_OUTPUT_STEREO\n\t\t\t};\n\t\t\t\n\t\t\t#define
       VFX_VARYING_PS_INPUTS ps_input\n\t\t\t#define VFX_VARYING_POSCS pos\n\t\t\t#define
       VFX_VARYING_ALPHA builtInInterpolants.z\n\t\t\t#define VFX_VARYING_ALPHATHRESHOLD
       builtInInterpolants.x\n\t\t\t#define VFX_VARYING_FRAMEBLEND builtInInterpolants.y\n\t\t\t#define
@@ -18947,12 +18946,12 @@ VisualEffectResource:
       && defined (VFX_VARYING_FRAMEBLEND)\n\t\t\t\t\t\to.VFX_VARYING_UV.zw = uvData.uvs.zw;\n\t\t\t\t\t\to.VFX_VARYING_FRAMEBLEND
       = uvData.blend;\n\t\t\t\t\t\t#if USE_FLIPBOOK_MOTIONVECTORS && defined(VFX_VARYING_MOTIONVECTORSCALE)\n\t\t\t\t\t\t\n\t\t\t\t\t\to.VFX_VARYING_MOTIONVECTORSCALE
       = motionVectorScale * invFlipBookSize;\n\t\t\t\t\t\t#endif\n\t\t\t\t\t\t#endif\n\t\t\t\t\t\t#endif\n\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t   
-      \n\t\t\t    float initialAlpha__ = (float)0;{\n\t\t\t        uint tmp_bb =
-      attributes.particleId / asuint(uniform_e);\n\t\t\t        uint tmp_bc = tmp_bb
-      * asuint(uniform_e);\n\t\t\t        uint tmp_bd = attributes.particleId - tmp_bc;\n\t\t\t       
-      float tmp_be = (float)tmp_bd;\n\t\t\t        float tmp_bf = tmp_be * uniform_f;\n\t\t\t       
-      float tmp_bg = tmp_bf * uniform_g;\n\t\t\t        \n\t\t\t        initialAlpha__
-      = tmp_bg;\n\t\t\t    }\n\t\t\t    o.initialAlpha = initialAlpha__;\n\n\t\t\t\n\t\t\t\treturn
+      \n\t\t\t    float alphaOffset__ = (float)0;{\n\t\t\t        uint tmp_bb = attributes.particleId
+      / asuint(uniform_e);\n\t\t\t        uint tmp_bc = tmp_bb * asuint(uniform_e);\n\t\t\t       
+      uint tmp_bd = attributes.particleId - tmp_bc;\n\t\t\t        float tmp_be =
+      (float)tmp_bd;\n\t\t\t        float tmp_bf = tmp_be * uniform_f;\n\t\t\t       
+      float tmp_bg = tmp_bf * uniform_g;\n\t\t\t        \n\t\t\t        alphaOffset__
+      = tmp_bg;\n\t\t\t    }\n\t\t\t    o.alphaOffset = alphaOffset__;\n\n\t\t\t\n\t\t\t\treturn
       o;\n\t\t\t}\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t#include
       \"Packages/com.unity.visualeffectgraph/Shaders/VFXCommonOutput.hlsl\"\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t#if
       VFX_PASSDEPTH == VFX_PASSDEPTH_SELECTION\n\t\t\tint _ObjectId;\n\t\t\tint _PassValue;\n\t\t\t#endif\n\t\t\t\n\t\t\t#include
@@ -18964,15 +18963,15 @@ VisualEffectResource:
       float Alpha_4;\n\t\t\t    float AlphaThreshold_7;\n\t\t\t};\n\t\t\t\n\t\t\tSG_Output_75dc0b4ccd731aa4dbccf92567e457c0
       SG_Evaluate_75dc0b4ccd731aa4dbccf92567e457c0(\n\t\t\t    SG_Input_75dc0b4ccd731aa4dbccf92567e457c0
       IN,\n\t\t\t    /* Property: mainTexture */ TEXTURE2D_PARAM(mainTexture, samplermainTexture),
-      float4 mainTexture_TexelSize,\n\t\t\t    /* Property: initialAlpha */ float
-      initialAlpha,\n\t\t\t    /* Property: alphaTreshold */ float alphaTreshold)\n\t\t\t{\n\t\t\t   
+      float4 mainTexture_TexelSize,\n\t\t\t    /* Property: alphaOffset */ float
+      alphaOffset,\n\t\t\t    /* Property: alphaTreshold */ float alphaTreshold)\n\t\t\t{\n\t\t\t   
       // Node: Sample Texture 2D\n\t\t\t    float4 _SampleTexture2D_A56FA189_RGBA_0
       = SAMPLE_TEXTURE2D(mainTexture, samplermainTexture, IN.uv0.xy);\n\t\t\t   
       float _SampleTexture2D_A56FA189_R_4 = _SampleTexture2D_A56FA189_RGBA_0.r;\n\t\t\t   
       float _SampleTexture2D_A56FA189_G_5 = _SampleTexture2D_A56FA189_RGBA_0.g;\n\t\t\t   
       float _SampleTexture2D_A56FA189_B_6 = _SampleTexture2D_A56FA189_RGBA_0.b;\n\t\t\t   
       float _SampleTexture2D_A56FA189_A_7 = _SampleTexture2D_A56FA189_RGBA_0.a;\n\t\t\t\n\t\t\t   
-      // Node: Property\n\t\t\t    float _Property_3D274130_Out_0 = initialAlpha;\n\t\t\t\n\t\t\t   
+      // Node: Property\n\t\t\t    float _Property_3D274130_Out_0 = alphaOffset;\n\t\t\t\n\t\t\t   
       // Node: Add\n\t\t\t    float _Add_1B57CCE9_Out_2;\n\t\t\t    Unity_Add_float(_SampleTexture2D_A56FA189_A_7,
       _Property_3D274130_Out_0, _Add_1B57CCE9_Out_2);\n\t\t\t\n\t\t\t    // Node:
       Property\n\t\t\t    float _Property_64B1CF31_Out_0 = alphaTreshold;\n\t\t\t\n\t\t\t   
@@ -18980,12 +18979,12 @@ VisualEffectResource:
       OUT;\n\t\t\t    OUT.Alpha_4 = _Add_1B57CCE9_Out_2;\n\t\t\t    OUT.AlphaThreshold_7
       = _Property_64B1CF31_Out_0;\n\t\t\t    return OUT;\n\t\t\t}\n\t\t\t\n\n\t\t\t\n\t\t\t#pragma
       fragment frag\n\t\t\tfloat4 frag(ps_input i) : SV_TARGET\n\t\t\t{\n\t\t\t\tUNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);\n\t\t\t\tVFXTransformPSInputs(i);\n\t\t\t   
-      #ifdef VFX_SHADERGRAPH\n\t\t\t        float initialAlpha = i.initialAlpha;\n\t\t\t       
+      #ifdef VFX_SHADERGRAPH\n\t\t\t        float alphaOffset = i.alphaOffset;\n\t\t\t       
       \n\t\t\t        //Call Shader Graph\n\t\t\t        SG_Input_75dc0b4ccd731aa4dbccf92567e457c0
       INSG = (SG_Input_75dc0b4ccd731aa4dbccf92567e457c0)0;\n\t\t\t        INSG.uv0.xy
       = i.uv;\n\t\t\t        \n\t\t\t        SG_Output_75dc0b4ccd731aa4dbccf92567e457c0
       OUTSG = SG_Evaluate_75dc0b4ccd731aa4dbccf92567e457c0(INSG,mainTexture, samplermainTexture,
-      mainTexture_TexelSize, initialAlpha, alphaTreshold);\n\t\t\t        #if (USE_ALPHA_TEST
+      mainTexture_TexelSize, alphaOffset, alphaTreshold);\n\t\t\t        #if (USE_ALPHA_TEST
       || WRITE_MOTION_VECTOR_IN_FORWARD) && defined(VFX_VARYING_ALPHATHRESHOLD)\n\t\t\t       
       i.VFX_VARYING_ALPHATHRESHOLD = OUTSG.AlphaThreshold_7;\n\t\t\t        #endif\n\t\t\t       
       \n\n\t\t\t        \n\t\t\t        float alpha = OUTSG.Alpha_4;\n\t\t\t    #else\n\t\t\t       
@@ -19015,7 +19014,7 @@ VisualEffectResource:
       cPosPrevious : TEXCOORD4;\n\t\t\t\tfloat4 cPosNonJiterred : TEXCOORD5;\n\t\t\t\t#endif\n\t\t\t\t\n\t\t\t\t#if
       SHADERGRAPH_NEEDS_NORMAL_FORWARD\n\t\t\t\tfloat3 normal : TEXCOORD6;\n\t\t\t\t#endif\n\t\t\t\t#if
       SHADERGRAPH_NEEDS_TANGENT_FORWARD\n\t\t\t\tfloat3 tangent : TEXCOORD7;\n\t\t\t\t#endif\n\t\t\t\t\n\t\t       
-      nointerpolation float initialAlpha : NORMAL0;\n\t\t        \n\n\t\t\t\t\n\t\t\t\tUNITY_VERTEX_OUTPUT_STEREO\n\t\t\t};\n\t\t\t\n\t\t\tstruct
+      nointerpolation float alphaOffset : NORMAL0;\n\t\t        \n\n\t\t\t\t\n\t\t\t\tUNITY_VERTEX_OUTPUT_STEREO\n\t\t\t};\n\t\t\t\n\t\t\tstruct
       ps_output\n\t\t\t{\n\t\t\t\tfloat4 color : SV_Target0;\n\t\t#if WRITE_MOTION_VECTOR_IN_FORWARD\n\t\t\t\tfloat4
       outMotionVector : SV_Target1;\n\t\t#endif\n\t\t\t};\n\t\t\n\t\t#define VFX_VARYING_PS_INPUTS
       ps_input\n\t\t#define VFX_VARYING_POSCS pos\n\t\t#define VFX_VARYING_COLOR
@@ -19188,12 +19187,12 @@ VisualEffectResource:
       && defined (VFX_VARYING_FRAMEBLEND)\n\t\t\t\t\t\to.VFX_VARYING_UV.zw = uvData.uvs.zw;\n\t\t\t\t\t\to.VFX_VARYING_FRAMEBLEND
       = uvData.blend;\n\t\t\t\t\t\t#if USE_FLIPBOOK_MOTIONVECTORS && defined(VFX_VARYING_MOTIONVECTORSCALE)\n\t\t\t\t\t\t\n\t\t\t\t\t\to.VFX_VARYING_MOTIONVECTORSCALE
       = motionVectorScale * invFlipBookSize;\n\t\t\t\t\t\t#endif\n\t\t\t\t\t\t#endif\n\t\t\t\t\t\t#endif\n\t\t\t\t\t\t\n\t\t\t\n\t\t\t\t\n\t\t\t   
-      \n\t\t\t    float initialAlpha__ = (float)0;{\n\t\t\t        uint tmp_bb =
-      attributes.particleId / asuint(uniform_e);\n\t\t\t        uint tmp_bc = tmp_bb
-      * asuint(uniform_e);\n\t\t\t        uint tmp_bd = attributes.particleId - tmp_bc;\n\t\t\t       
-      float tmp_be = (float)tmp_bd;\n\t\t\t        float tmp_bf = tmp_be * uniform_f;\n\t\t\t       
-      float tmp_bg = tmp_bf * uniform_g;\n\t\t\t        \n\t\t\t        initialAlpha__
-      = tmp_bg;\n\t\t\t    }\n\t\t\t    o.initialAlpha = initialAlpha__;\n\n\t\t\t\n\t\t\t\treturn
+      \n\t\t\t    float alphaOffset__ = (float)0;{\n\t\t\t        uint tmp_bb = attributes.particleId
+      / asuint(uniform_e);\n\t\t\t        uint tmp_bc = tmp_bb * asuint(uniform_e);\n\t\t\t       
+      uint tmp_bd = attributes.particleId - tmp_bc;\n\t\t\t        float tmp_be =
+      (float)tmp_bd;\n\t\t\t        float tmp_bf = tmp_be * uniform_f;\n\t\t\t       
+      float tmp_bg = tmp_bf * uniform_g;\n\t\t\t        \n\t\t\t        alphaOffset__
+      = tmp_bg;\n\t\t\t    }\n\t\t\t    o.alphaOffset = alphaOffset__;\n\n\t\t\t\n\t\t\t\treturn
       o;\n\t\t\t}\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t\t#include
       \"Packages/com.unity.visualeffectgraph/Shaders/VFXCommonOutput.hlsl\"\n\t\t\t\n\t\t\t\n\t\t\t\n\t\t#if
       VFX_SHADERGRAPH            \n\t\t    #include \"Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl\"\n\t\t   
@@ -19207,8 +19206,8 @@ VisualEffectResource:
       AlphaThreshold_7;\n\t\t    };\n\t\t    \n\t\t    SG_Output_75dc0b4ccd731aa4dbccf92567e457c0
       SG_Evaluate_75dc0b4ccd731aa4dbccf92567e457c0(\n\t\t        SG_Input_75dc0b4ccd731aa4dbccf92567e457c0
       IN,\n\t\t        /* Property: mainTexture */ TEXTURE2D_PARAM(mainTexture, samplermainTexture),
-      float4 mainTexture_TexelSize,\n\t\t        /* Property: initialAlpha */ float
-      initialAlpha,\n\t\t        /* Property: alphaTreshold */ float alphaTreshold)\n\t\t   
+      float4 mainTexture_TexelSize,\n\t\t        /* Property: alphaOffset */ float
+      alphaOffset,\n\t\t        /* Property: alphaTreshold */ float alphaTreshold)\n\t\t   
       {\n\t\t        // Node: Sample Texture 2D\n\t\t        float4 _SampleTexture2D_A56FA189_RGBA_0
       = SAMPLE_TEXTURE2D(mainTexture, samplermainTexture, IN.uv0.xy);\n\t\t       
       float _SampleTexture2D_A56FA189_R_4 = _SampleTexture2D_A56FA189_RGBA_0.r;\n\t\t       
@@ -19218,7 +19217,7 @@ VisualEffectResource:
       \n\t\t        // Node: Add\n\t\t        float4 _Add_D245BB6_Out_2;\n\t\t       
       Unity_Add_float4(_SampleTexture2D_A56FA189_RGBA_0, float4(1, 0, 0, 0), _Add_D245BB6_Out_2);\n\t\t   
       \n\t\t        // Node: Property\n\t\t        float _Property_3D274130_Out_0
-      = initialAlpha;\n\t\t    \n\t\t        // Node: Add\n\t\t        float _Add_1B57CCE9_Out_2;\n\t\t       
+      = alphaOffset;\n\t\t    \n\t\t        // Node: Add\n\t\t        float _Add_1B57CCE9_Out_2;\n\t\t       
       Unity_Add_float(_SampleTexture2D_A56FA189_A_7, _Property_3D274130_Out_0, _Add_1B57CCE9_Out_2);\n\t\t   
       \n\t\t        // Node: Property\n\t\t        float _Property_64B1CF31_Out_0
       = alphaTreshold;\n\t\t    \n\t\t        // Visual Effect Master\n\t\t       
@@ -19244,12 +19243,12 @@ VisualEffectResource:
       normalScale = 1.0f;\n\t\t\t\t\t\t\t#ifdef VFX_VARYING_NORMALSCALE\n\t\t\t\t\t\t\tnormalScale
       = i.VFX_VARYING_NORMALSCALE;\n\t\t\t\t\t\t\t#endif\n\t\t\t\t\t\t\tnormalWS
       = normalize(lerp(normalWS,mul(n,tbn),normalScale));\n\t\t\t\t\t\t\t#endif\n\t\t\t\t\t\t\t#endif\n\t\t\t\t\t\t\t#endif\n\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t#if
-      VFX_SHADERGRAPH\n\t\t        float initialAlpha = i.initialAlpha;\n\t\t       
+      VFX_SHADERGRAPH\n\t\t        float alphaOffset = i.alphaOffset;\n\t\t       
       \n\t\t        //Call Shader Graph\n\t\t        SG_Input_75dc0b4ccd731aa4dbccf92567e457c0
       INSG = (SG_Input_75dc0b4ccd731aa4dbccf92567e457c0)0;\n\t\t        INSG.uv0.xy
       = i.uv;\n\t\t        \n\t\t        SG_Output_75dc0b4ccd731aa4dbccf92567e457c0
       OUTSG = SG_Evaluate_75dc0b4ccd731aa4dbccf92567e457c0(INSG,mainTexture, samplermainTexture,
-      mainTexture_TexelSize, initialAlpha, alphaTreshold);\n\t\t        #if (USE_ALPHA_TEST
+      mainTexture_TexelSize, alphaOffset, alphaTreshold);\n\t\t        #if (USE_ALPHA_TEST
       || WRITE_MOTION_VECTOR_IN_FORWARD) && defined(VFX_VARYING_ALPHATHRESHOLD)\n\t\t       
       i.VFX_VARYING_ALPHATHRESHOLD = OUTSG.AlphaThreshold_7;\n\t\t        #endif\n\t\t       
       \n\n\t\t        \n\t\t        #if HAS_SHADERGRAPH_PARAM_COLOR\n\t\t           
@@ -60263,7 +60262,7 @@ MonoBehaviour:
   m_UISuperCollapsed: 0
   m_InputSlots:
   - {fileID: 8926484042661616259}
-  - {fileID: 8926484042661616298}
+  - {fileID: 8926484042661616316}
   - {fileID: 8926484042661616295}
   m_OutputSlots: []
   m_Label: Quad_Output_Alpha_Clip_ShaderGraph
@@ -61376,7 +61375,7 @@ MonoBehaviour:
   m_UISuperCollapsed: 0
   m_MasterSlot: {fileID: 8926484042661616298}
   m_MasterData:
-    m_Owner: {fileID: 8926484042661616257}
+    m_Owner: {fileID: 0}
     m_Value:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
@@ -61390,8 +61389,7 @@ MonoBehaviour:
         PublicKeyToken=b77a5c561934e089
     attributes: []
   m_Direction: 0
-  m_LinkedSlots:
-  - {fileID: 8926484042661616312}
+  m_LinkedSlots: []
 --- !u!114 &8926484042661616309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61526,7 +61524,7 @@ MonoBehaviour:
     attributes: []
   m_Direction: 1
   m_LinkedSlots:
-  - {fileID: 8926484042661616298}
+  - {fileID: 8926484042661616316}
 --- !u!114 &8926484042661616313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61621,3 +61619,38 @@ MonoBehaviour:
   m_LinkedSlots:
   - {fileID: 8926484042661616240}
   - {fileID: 8926484042661616295}
+--- !u!114 &8926484042661616316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f780aa281814f9842a7c076d436932e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Parent: {fileID: 0}
+  m_Children: []
+  m_UIPosition: {x: 0, y: 0}
+  m_UICollapsed: 1
+  m_UISuperCollapsed: 0
+  m_MasterSlot: {fileID: 8926484042661616316}
+  m_MasterData:
+    m_Owner: {fileID: 8926484042661616257}
+    m_Value:
+      m_Type:
+        m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      m_SerializableObject: 0.19
+    m_Space: 2147483647
+  m_Property:
+    name: alphaOffset
+    m_serializedType:
+      m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
+    attributes: []
+  m_Direction: 0
+  m_LinkedSlots:
+  - {fileID: 8926484042661616312}
