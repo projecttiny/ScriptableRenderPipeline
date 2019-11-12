@@ -33,6 +33,10 @@
 #define BUMP_SCALE_NOT_SUPPORTED !SHADER_HINT_NICE_QUALITY
 #endif
 
+#if defined(_ADDITIONAL_LIGHTS) || defined(_MAIN_LIGHT_SHADOWS_CASCADE)
+#define REQUIRES_WORLD_SPACE_POS_INTERPOLATOR
+#endif
+
 struct VertexPositionInputs
 {
     float3 positionWS; // World space position

@@ -189,13 +189,14 @@ namespace UnityEngine.Rendering.Universal
         public void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
             Camera camera = renderingData.cameraData.camera;
-
             CommandBuffer cmd = CommandBufferPool.Get(k_SetCameraRenderStateTag);
+
+            // Initialize Camera Render State
             SetCameraRenderState(cmd, ref renderingData.cameraData);
             context.ExecuteCommandBuffer(cmd);
             cmd.Clear();
             
-
+            // Sort the render pass queue
             SortStable(m_ActiveRenderPassQueue);
 
             // Cache the time for after the call to `SetupCameraProperties` and set the time variables in shader
@@ -257,17 +258,16 @@ namespace UnityEngine.Rendering.Universal
 #endif
 
             // In the opaque and transparent blocks the main rendering executes.
+
+            // Opaque blocks...
             ExecuteBlock(RenderPassBlock.MainRenderingOpaque, blockRanges, context, ref renderingData);
 
+            // Transparent blocks...
             // Set the shadow settings before rendering transparent objects
             CoreUtils.SetKeyword(cmd, ShaderKeywordStrings.MainLightShadows, renderingData.shadowData.shadowTransparentReceiveSupported);
-            CoreUtils.SetKeyword(cmd, ShaderKeywordStrings.MainLightShadowCascades, false);
             context.ExecuteCommandBuffer(cmd);
             cmd.Clear();
-            CommandBufferPool.Release(cmd);
-
             ExecuteBlock(RenderPassBlock.MainRenderingTransparent, blockRanges, context, ref renderingData);
-
 
 
             DrawGizmos(context, camera, GizmoSubset.PreImageEffects);
@@ -283,6 +283,7 @@ namespace UnityEngine.Rendering.Universal
             //if (renderingData.resolveFinalTarget)
                 InternalFinishRendering(context);
             blockRanges.Dispose();
+            CommandBufferPool.Release(cmd);
         }
 
         /// <summary>

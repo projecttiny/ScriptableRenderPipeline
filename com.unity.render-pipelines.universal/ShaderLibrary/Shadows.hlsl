@@ -7,14 +7,6 @@
 
 #define MAX_SHADOW_CASCADES 4
 
-#ifndef SHADOWS_SCREEN
-#if defined(_MAIN_LIGHT_SHADOWS) && defined(_MAIN_LIGHT_SHADOWS_CASCADE) && !defined(SHADER_API_GLES)
-#define SHADOWS_SCREEN 1
-#else
-#define SHADOWS_SCREEN 0
-#endif
-#endif
-
 SCREENSPACE_TEXTURE(_ScreenSpaceShadowmapTexture);
 SAMPLER(sampler_ScreenSpaceShadowmapTexture);
 
@@ -95,6 +87,7 @@ half4 GetMainLightShadowParams()
 {
     return _MainLightShadowParams;
 }
+
 
 // ShadowParams
 // x: ShadowStrength
@@ -185,9 +178,9 @@ half ComputeCascadeIndex(float3 positionWS)
     float3 fromCenter1 = positionWS - _CascadeShadowSplitSpheres1.xyz;
     float3 fromCenter2 = positionWS - _CascadeShadowSplitSpheres2.xyz;
     float3 fromCenter3 = positionWS - _CascadeShadowSplitSpheres3.xyz;
-    float4 distances2 = float4(dot(fromCenter0, fromCenter0), dot(fromCenter1, fromCenter1), dot(fromCenter2, fromCenter2), dot(fromCenter3, fromCenter3));
+    float4 distances = float4(dot(fromCenter0, fromCenter0), dot(fromCenter1, fromCenter1), dot(fromCenter2, fromCenter2), dot(fromCenter3, fromCenter3));
 
-    half4 weights = half4(distances2 < _CascadeShadowSplitSphereRadii);
+    half4 weights = half4(distances < _CascadeShadowSplitSphereRadii);
     weights.yzw = saturate(weights.yzw - weights.xyz);
 
     return 4 - dot(weights, half4(4, 3, 2, 1));
@@ -197,10 +190,11 @@ float4 TransformWorldToShadowCoord(float3 positionWS)
 {
 #ifdef _MAIN_LIGHT_SHADOWS_CASCADE
     half cascadeIndex = ComputeCascadeIndex(positionWS);
-    return mul(_MainLightWorldToShadow[cascadeIndex], float4(positionWS, 1.0));
 #else
-    return mul(_MainLightWorldToShadow[0], float4(positionWS, 1.0));
+    half cascadeIndex = 0;
 #endif
+
+    return mul(_MainLightWorldToShadow[cascadeIndex], float4(positionWS, 1.0));
 }
 
 half MainLightRealtimeShadow(float4 shadowCoord)
@@ -209,13 +203,9 @@ half MainLightRealtimeShadow(float4 shadowCoord)
     return 1.0h;
 #endif
 
-#if SHADOWS_SCREEN
-    return SampleScreenSpaceShadowmap(shadowCoord);
-#else
     ShadowSamplingData shadowSamplingData = GetMainLightShadowSamplingData();
     half4 shadowParams = GetMainLightShadowParams();
     return SampleShadowmap(TEXTURE2D_ARGS(_MainLightShadowmapTexture, sampler_MainLightShadowmapTexture), shadowCoord, shadowSamplingData, shadowParams, false);
-#endif
 }
 
 half AdditionalLightRealtimeShadow(int lightIndex, float3 positionWS)
@@ -246,7 +236,7 @@ half AdditionalLightRealtimeShadow(int lightIndex, float3 positionWS)
 
 float4 GetShadowCoord(VertexPositionInputs vertexInput)
 {
-#if SHADOWS_SCREEN
+#if defined(_MAIN_LIGHT_SHADOWS_CASCADE)
     return ComputeScreenPos(vertexInput.positionCS);
 #else
     return TransformWorldToShadowCoord(vertexInput.positionWS);

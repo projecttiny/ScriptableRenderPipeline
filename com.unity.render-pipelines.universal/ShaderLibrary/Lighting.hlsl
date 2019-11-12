@@ -570,6 +570,10 @@ half4 UniversalFragmentPBR(InputData inputData, half3 albedo, half metallic, hal
     BRDFData brdfData;
     InitializeBRDFData(albedo, metallic, specular, smoothness, alpha, brdfData);
 
+#if defined(REQUIRES_WORLD_SPACE_POS_INTERPOLATOR)
+    inputData.shadowCoord = TransformWorldToShadowCoord(inputData.positionWS);
+#endif
+
     Light mainLight = GetMainLight(inputData.shadowCoord);
     MixRealtimeAndBakedGI(mainLight, inputData.normalWS, inputData.bakedGI, half4(0, 0, 0, 0));
 
