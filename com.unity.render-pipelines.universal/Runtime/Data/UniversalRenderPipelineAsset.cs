@@ -146,7 +146,7 @@ namespace UnityEngine.Rendering.Universal
         [SerializeField] float m_ShadowDepthBias = 1.0f;
         [SerializeField] float m_ShadowNormalBias = 1.0f;
         [SerializeField] bool m_SoftShadowsSupported = false;
-        [SerializeField] bool m_ShadowTransparentReceiveSupported = false;
+        [SerializeField] bool m_ShadowTransparentReceiveSupported = true;
 
         // Advanced settings
         [SerializeField] bool m_UseSRPBatcher = true;
