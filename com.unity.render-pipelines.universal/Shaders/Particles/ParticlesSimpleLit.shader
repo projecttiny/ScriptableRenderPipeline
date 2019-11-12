@@ -96,7 +96,6 @@ Shader "Universal Render Pipeline/Particles/Simple Lit"
             #pragma shader_feature _EMISSION
             #pragma shader_feature _ _SPECGLOSSMAP _SPECULAR_COLOR
             #pragma shader_feature _GLOSSINESS_FROM_BASE_ALPHA
-            #pragma shader_feature _RECEIVE_SHADOWS_OFF
 
             // -------------------------------------
             // Particle Keywords
@@ -119,6 +118,7 @@ Shader "Universal Render Pipeline/Particles/Simple Lit"
             // -------------------------------------
             // Unity defined keywords
             #pragma multi_compile_fog
+            #define _RECEIVE_SHADOWS_OFF 0
 
             #pragma vertex ParticlesLitVertex
             #pragma fragment ParticlesLitFragment

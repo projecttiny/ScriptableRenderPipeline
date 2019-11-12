@@ -89,7 +89,6 @@ Shader "Universal Render Pipeline/Particles/Lit"
             #pragma shader_feature _NORMALMAP
             #pragma shader_feature _EMISSION
             #pragma shader_feature _METALLICSPECGLOSSMAP
-            #pragma shader_feature _RECEIVE_SHADOWS_OFF
 
             // -------------------------------------
             // Particle Keywords
@@ -112,6 +111,7 @@ Shader "Universal Render Pipeline/Particles/Lit"
             // -------------------------------------
             // Unity defined keywords
             #pragma multi_compile_fog
+            #define _RECEIVE_SHADOWS_OFF 0
 
             #pragma vertex ParticlesLitVertex
             #pragma fragment ParticlesLitFragment
