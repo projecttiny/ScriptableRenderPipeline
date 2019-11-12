@@ -116,7 +116,23 @@ namespace UnityEditor.VFX
         }
 
         public override bool supportsUV => base.supportsUV && shaderGraph == null;
-        public override bool exposeAlphaThreshold => base.exposeAlphaThreshold && shaderGraph == null;
+        public override bool exposeAlphaThreshold
+        {
+            get
+            {
+                if (shaderGraph == null)
+                {
+                    if (base.exposeAlphaThreshold)
+                        return true;
+                }
+                else
+                {
+                    if (!shaderGraph.HasOutput(ShaderGraphVfxAsset.AlphaThresholdSlotId)) //alpha threshold isn't controlled by shadergraph
+                        return true;
+                }
+                return false;
+            }
+        }
         public override bool supportSoftParticles => base.supportSoftParticles && shaderGraph == null;
         public override bool hasAlphaClipping
         {
