@@ -47,7 +47,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed an issue that caused only selected object to render in SceneView when Wireframe drawmode was selected.
 - Fixed Renderer Features UI tooltips. [case 1191901](https://issuetracker.unity3d.com/issues/forward-renderers-render-objects-layer-mask-tooltip-is-incorrect-and-contains-a-typo)
 - Fixed multiple issues where Shader Graph shaders failed to build for XR in the Universal RP.
-- Missed normalize operation on vertex normals on some speedtree shader variants.
+- Fixed inconsistent lighting between the forward renderer and the deferred renderer, that was caused by a missing normalize operation on vertex normals on some speedtree shader variants.
 
 ## [7.1.1] - 2019-09-05
 ### Upgrade Guide
