@@ -1,4 +1,4 @@
-DONT FORGET TO ADD A CHANGELOG
+** DONT FORGET TO ADD A CHANGELOG **
 
 ### Checklist for PR maker
 - Have you added a Label? : HDRP, Universal, ShaderGraph etc...
