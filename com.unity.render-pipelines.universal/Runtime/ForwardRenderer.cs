@@ -259,7 +259,7 @@ namespace UnityEngine.Rendering.Universal
 
                     if (requiresFinalPostProcessPass)
                     {
-                        m_FinalPostProcessPass.SetupFinalPass(m_ActiveCameraColorAttachment);
+                        m_FinalPostProcessPass.SetupFinalPass(m_AfterPostProcessColor);
                         EnqueuePass(m_FinalPostProcessPass);
                     }
                     else
