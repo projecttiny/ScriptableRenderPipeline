@@ -6,7 +6,10 @@ namespace UnityEngine.Rendering
     public struct GlobalXRSettings
     {
         /// <summary>Default GlobalXRSettings</summary>
-        public static readonly GlobalXRSettings @default = new GlobalXRSettings()
+        [Obsolete("Since 2020.1, use GlobalXRSettings.NewDefault() instead.")]
+        public static readonly GlobalXRSettings @default = default;
+        /// <summary>Default GlobalXRSettings</summary>
+        public static GlobalXRSettings NewDefault() => new GlobalXRSettings()
         {
             singlePass = true,
             occlusionMesh = true
