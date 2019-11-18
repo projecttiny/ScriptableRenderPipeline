@@ -25,16 +25,16 @@ namespace UnityEditor.Rendering.HighDefinition
         public const string AlbedoSlotName = "Albedo";
         public const string AlbedoDisplaySlotName = "BaseColor";
         public const string NormalSlotName = "Normal";
-        public const string BentNormalSlotName = "BentNormal";
+        public const string BentNormalSlotName = "Bent Normal";
         public const string TangentSlotName = "Tangent";
-        public const string SubsurfaceMaskSlotName = "SubsurfaceMask";
+        public const string SubsurfaceMaskSlotName = "Subsurface Mask";
         public const string ThicknessSlotName = "Thickness";
-        public const string DiffusionProfileHashSlotName = "DiffusionProfileHash";
-        public const string IridescenceMaskSlotName = "IridescenceMask";
-        public const string IridescenceThicknessSlotName = "IridescenceThickness";
+        public const string DiffusionProfileHashSlotName = "Diffusion Profile";
+        public const string IridescenceMaskSlotName = "Iridescence Mask";
+        public const string IridescenceThicknessSlotName = "Iridescence Layer Thickness";
         public const string SpecularColorSlotName = "Specular";
-        public const string SpecularColorDisplaySlotName = "SpecularColor";
-        public const string CoatMaskSlotName = "CoatMask";
+        public const string SpecularColorDisplaySlotName = "Specular Color";
+        public const string CoatMaskSlotName = "Coat Mask";
         public const string EmissionSlotName = "Emission";
         public const string MetallicSlotName = "Metallic";
         public const string SmoothnessSlotName = "Smoothness";
@@ -111,9 +111,10 @@ namespace UnityEditor.Rendering.HighDefinition
         // Don't support Multiply
         public enum AlphaModeLit
         {
-            Alpha,
-            Premultiply,
-            Additive,
+            // Note the field are not in the order of their value for a mismatch in order in the original definition.
+            Alpha = 0,
+            Additive = 2,
+            Premultiply = 1,
         }
 
         // Just for convenience of doing simple masks. We could run out of bits of course.

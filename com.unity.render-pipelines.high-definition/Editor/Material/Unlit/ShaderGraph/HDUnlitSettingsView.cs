@@ -157,12 +157,21 @@ namespace UnityEditor.Rendering.HighDefinition.Drawing
                     --indentLevel;
                 }
 
-                ps.Add(new PropertyRow(CreateLabel("ZWrite", indentLevel)), (row) =>
+                ps.Add(new PropertyRow(CreateLabel("Depth Write", indentLevel)), (row) =>
                 {
                     row.Add(new Toggle(), (toggle) =>
                     {
                         toggle.value = m_Node.zWrite.isOn;
                         toggle.OnToggleChanged(ChangeZWrite);
+                    });
+                });
+
+                ps.Add(new PropertyRow(CreateLabel("Depth Test", indentLevel)), (row) =>
+                {
+                    row.Add(new EnumField(m_Node.zTest), (e) =>
+                    {
+                        e.value = m_Node.zTest;
+                        e.RegisterValueChangedCallback(ChangeZTest);
                     });
                 });
 
@@ -177,15 +186,6 @@ namespace UnityEditor.Rendering.HighDefinition.Drawing
                         });
                     });
                 }
-
-                ps.Add(new PropertyRow(CreateLabel("Z Test", indentLevel)), (row) =>
-                {
-                    row.Add(new EnumField(m_Node.zTest), (e) =>
-                    {
-                        e.value = m_Node.zTest;
-                        e.RegisterValueChangedCallback(ChangeZTest);
-                    });
-                });
 
                 --indentLevel;
             }
