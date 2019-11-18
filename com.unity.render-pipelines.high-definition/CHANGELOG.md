@@ -144,6 +144,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed y-flip in scene view with XR SDK
 - Fixed a number of issues with Material Quality setting
 - Fixed the transparent Cull Mode option in HD unlit master node settings only visible if double sided is ticked.
+- Fixed editing a scalable settings will edit all loaded asset in memory instead of targetted asset.
 
 ### Changed
 - Color buffer pyramid is not allocated anymore if neither refraction nor distortion are enabled
