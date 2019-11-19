@@ -81,18 +81,9 @@ namespace UnityEditor.Rendering.HighDefinition
             CoreEditorDrawer<TSerialized>.Group(
                 CoreEditorDrawer<TSerialized>.FoldoutGroup(HDProbeUI.k_ProxySettingsHeader, HDProbeUI.Expandable.Projection, HDProbeUI.k_ExpandedState,
                     HDProbeUI.Drawer<TProvider>.DrawProjectionSettings),
-                CoreEditorDrawer<TSerialized>.AdvancedFoldoutGroup(HDProbeUI.k_InfluenceVolumeHeader, HDProbeUI.Expandable.Influence, HDProbeUI.k_ExpandedState,
-                    (s, o) => s.GetEditorOnlyData(SerializedHDProbe.EditorOnlyData.InfluenceVolumeIsAdvanced),
-                    (s, o) =>
-                    {
-                        InfluenceVolumeUI.SetInfluenceAdvancedControlSwitch(s.probeSettings.influence, o, advancedControl: !s.GetEditorOnlyData(SerializedHDProbe.EditorOnlyData.InfluenceVolumeIsAdvanced));
-                        s.ToggleEditorOnlyData(SerializedHDProbe.EditorOnlyData.InfluenceVolumeIsAdvanced);
-                    },
-                    CoreEditorDrawer<TSerialized>.Group(
-                        HDProbeUI.Drawer<TProvider>.DrawInfluenceSettings, //handle both advanced control and normal control
-                        HDProbeUI.Drawer_DifferentShapeError
-                    ),
-                    CoreEditorDrawer<TSerialized>.noop
+                CoreEditorDrawer<TSerialized>.FoldoutGroup(HDProbeUI.k_InfluenceVolumeHeader, HDProbeUI.Expandable.Influence, HDProbeUI.k_ExpandedState,
+                    HDProbeUI.Drawer<TProvider>.DrawInfluenceSettings, //handle both advanced control and normal control
+                    HDProbeUI.Drawer_DifferentShapeError
                 ),
                 CoreEditorDrawer<TSerialized>.AdvancedFoldoutGroup(HDProbeUI.k_CaptureSettingsHeader, HDProbeUI.Expandable.Capture, HDProbeUI.k_ExpandedState,
                     (s, o) => s.GetEditorOnlyData(SerializedHDProbe.EditorOnlyData.CaptureSettingsIsAdvanced),

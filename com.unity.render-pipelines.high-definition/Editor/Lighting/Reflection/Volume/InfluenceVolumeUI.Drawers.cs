@@ -17,13 +17,16 @@ namespace UnityEditor.Rendering.HighDefinition
         {
             var provider = new TProvider();
 
-            //small piece of init logic previously in the removed Drawer_InfluenceAdvancedSwitch
             bool advanced = serialized.editorAdvancedModeEnabled.boolValue;
+            bool newAdvanced = EditorGUILayout.Popup(manipulatonTypeContent, advanced ? 1 : 0, displayedManipulationOptions) == 1;
+            if (advanced ^ newAdvanced)
+                serialized.editorAdvancedModeEnabled.boolValue = advanced = newAdvanced;
+
+            //small piece of init logic previously in the removed Drawer_InfluenceAdvancedSwitch
             s_BoxBaseHandle.monoHandle = false;
             s_BoxInfluenceHandle.monoHandle = !advanced;
             s_BoxInfluenceNormalHandle.monoHandle = !advanced;
             
-            EditorGUILayout.Space();
             EditorGUILayout.PropertyField(serialized.shape, shapeContent);
             switch ((InfluenceShape)serialized.shape.intValue)
             {
