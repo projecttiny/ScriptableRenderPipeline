@@ -573,6 +573,11 @@ namespace UnityEngine.Rendering
                     memorylessMode = memoryless,
                     name = CoreUtils.GetRenderTargetAutoName(width, height, slices, GraphicsFormatUtility.GetRenderTextureFormat(colorFormat), name, mips: useMipMap, enableMSAA: allocForMSAA, msaaSamples: m_ScaledRTCurrentMSAASamples)
                 };
+
+                if (!isShadowMap)
+                {
+                    rt.stencilFormat = GraphicsFormat.R8_UInt;
+                }
             }
             else
             {

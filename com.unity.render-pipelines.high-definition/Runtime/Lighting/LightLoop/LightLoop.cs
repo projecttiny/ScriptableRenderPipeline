@@ -2718,7 +2718,16 @@ namespace UnityEngine.Rendering.HighDefinition
 
                     for (int i = 0; i < resources.gBuffer.Length; ++i)
                         cmd.SetComputeTextureParam(parameters.buildMaterialFlagsShader, buildMaterialFlagsKernel, HDShaderIDs._GBufferTexture[i], resources.gBuffer[i]);
-                    cmd.SetComputeTextureParam(parameters.buildMaterialFlagsShader, buildMaterialFlagsKernel, HDShaderIDs._StencilTexture, resources.stencilTexture);
+
+                    if(resources.stencilTexture.rt.stencilFormat == GraphicsFormat.None)
+                    {
+                        Debug.Assert(false, "todo todo TODO TODO_FCC: Fix msaa before PR");
+                        //cmd.SetComputeTextureParam(parameters.buildMaterialFlagsShader, buildMaterialFlagsKernel, HDShaderIDs._StencilTexture, resources.stencilTexture);
+                    }
+                    else
+                    {
+                        cmd.SetComputeTextureParam(parameters.buildMaterialFlagsShader, buildMaterialFlagsKernel, HDShaderIDs._StencilTexture, resources.stencilTexture, 0, RenderTextureSubElement.Stencil);
+                    }
 
                     cmd.DispatchCompute(parameters.buildMaterialFlagsShader, buildMaterialFlagsKernel, parameters.numTilesFPTLX, parameters.numTilesFPTLY, parameters.viewCount);
                 }
@@ -2883,10 +2892,11 @@ namespace UnityEngine.Rendering.HighDefinition
             using (new ProfilingSample(cmd, "Build Light List"))
             {
                 var parameters = PrepareBuildGPULightListParameters(hdCamera);
+                // TODO_FCC: TODO TODO FIX MSAA BEFORE PR.
                 var resources = PrepareBuildGPULightListResources(
                     m_TileAndClusterData,
                     m_SharedRTManager.GetDepthStencilBuffer(hdCamera.frameSettings.IsEnabled(FrameSettingsField.MSAA)),
-                    m_SharedRTManager.GetStencilBufferCopy()
+                    m_SharedRTManager.GetDepthStencilBuffer(false)
                 );
 
                 bool tileFlagsWritten = false;
