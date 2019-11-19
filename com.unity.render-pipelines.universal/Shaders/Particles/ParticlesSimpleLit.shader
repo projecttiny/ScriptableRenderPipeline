@@ -118,7 +118,6 @@ Shader "Universal Render Pipeline/Particles/Simple Lit"
             // -------------------------------------
             // Unity defined keywords
             #pragma multi_compile_fog
-            #define _RECEIVE_SHADOWS_OFF 0
 
             #pragma vertex ParticlesLitVertex
             #pragma fragment ParticlesLitFragment
