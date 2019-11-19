@@ -140,9 +140,6 @@ namespace UnityEngine.Rendering.HighDefinition
                 aovRequest.PushCameraTexture(m_RenderGraph, AOVBuffers.Output, hdCamera, colorBuffer, aovBuffers);
             }
 
-
-
-
             // XR mirror view and blit do device
             EndCameraXR(m_RenderGraph, hdCamera);
 

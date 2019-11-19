@@ -145,7 +145,8 @@ namespace UnityEngine.Rendering.HighDefinition
 
             RenderCameraMotionVectors(renderGraph, hdCamera, result.depthPyramidTexture, result.resolvedMotionVectorsBuffer);
 
-            result.stencilBufferCopy = CopyStencilBufferIfNeeded(m_RenderGraph, hdCamera, result.depthBuffer, m_CopyStencil, m_CopyStencilForSSR);
+            // TODO TODO TODO_FCC: ADD MSAA CASE
+            result.stencilBufferCopy = result.depthBuffer;
 
             StopSinglePass(renderGraph, hdCamera);
 
