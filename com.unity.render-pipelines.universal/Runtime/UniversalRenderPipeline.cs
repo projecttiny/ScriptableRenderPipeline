@@ -425,13 +425,10 @@ namespace UnityEngine.Rendering.Universal
             }
 
             shadowData.bias = m_ShadowBiasData;
-
-            // Until we can have keyword stripping forcing single cascade hard shadows on gles2
-            bool supportsScreenSpaceShadows = SystemInfo.graphicsDeviceType != GraphicsDeviceType.OpenGLES2;
-
             shadowData.supportsMainLightShadows = SystemInfo.supportsShadows && settings.supportsMainLightShadows && mainLightCastShadows;
 
-            // we resolve shadows in screenspace when cascades are enabled to save ALU as computing cascade index + shadowCoord on fragment is expensive
+            // We no longer use screen space shadows in URP.
+            // This change allows us to have particles & transparent objects receive shadows.
             shadowData.requiresScreenSpaceShadowResolve = false;// shadowData.supportsMainLightShadows && supportsScreenSpaceShadows && settings.shadowCascadeOption != ShadowCascadesOption.NoCascades;
 
             int shadowCascadesCount;

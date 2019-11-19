@@ -136,15 +136,12 @@ namespace UnityEngine.Rendering.Universal
 
             bool mainLightShadows = m_MainLightShadowCasterPass.Setup(ref renderingData);
             bool additionalLightShadows = m_AdditionalLightsShadowCasterPass.Setup(ref renderingData);
-            bool resolveShadowsInScreenSpace = mainLightShadows && renderingData.shadowData.requiresScreenSpaceShadowResolve;
 
             // Depth prepass is generated in the following cases:
             // - Scene view camera always requires a depth texture. We do a depth pre-pass to simplify it and it shouldn't matter much for editor.
             // - If game or offscreen camera requires it we check if we can copy the depth from the rendering opaques pass and use that instead.
-            // - We resolve shadows in screen space
             bool requiresDepthPrepass = isSceneViewCamera;
             requiresDepthPrepass |= (requiresDepthTexture && !CanCopyDepth(ref renderingData.cameraData));
-            requiresDepthPrepass |= resolveShadowsInScreenSpace;
 
             // We copy the depth after the transparent pass in the following cases:
             // - The scene camera is rendering
@@ -199,12 +196,6 @@ namespace UnityEngine.Rendering.Universal
             {
                 m_DepthPrepass.Setup(cameraTargetDescriptor, m_DepthTexture);
                 EnqueuePass(m_DepthPrepass);
-            }
-
-            if (resolveShadowsInScreenSpace)
-            {
-                m_ScreenSpaceShadowResolvePass.Setup(cameraTargetDescriptor);
-                EnqueuePass(m_ScreenSpaceShadowResolvePass);
             }
 
             if (postProcessEnabled)

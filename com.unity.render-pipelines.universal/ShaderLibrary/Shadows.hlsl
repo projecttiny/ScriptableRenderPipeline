@@ -5,7 +5,26 @@
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Shadow/ShadowSamplingTent.hlsl"
 #include "Core.hlsl"
 
+#define SHADOWS_SCREEN 0
 #define MAX_SHADOW_CASCADES 4
+
+#if !defined(_RECEIVE_SHADOWS_OFF)
+    #if defined(_MAIN_LIGHT_SHADOWS)
+        #define MAIN_LIGHT_CALCULATE_SHADOWS
+    #endif
+
+    #if defined(_ADDITIONAL_LIGHT_SHADOWS)
+        #define ADDITIONAL_LIGHT_CALCULATE_SHADOWS
+    #endif
+#endif
+
+#if !defined(_MAIN_LIGHT_SHADOWS_CASCADE)
+#define REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR
+#endif
+
+#if defined(_ADDITIONAL_LIGHTS) || defined(_MAIN_LIGHT_SHADOWS_CASCADE)
+#define REQUIRES_WORLD_SPACE_POS_INTERPOLATOR
+#endif
 
 SCREENSPACE_TEXTURE(_ScreenSpaceShadowmapTexture);
 SAMPLER(sampler_ScreenSpaceShadowmapTexture);
@@ -178,9 +197,9 @@ half ComputeCascadeIndex(float3 positionWS)
     float3 fromCenter1 = positionWS - _CascadeShadowSplitSpheres1.xyz;
     float3 fromCenter2 = positionWS - _CascadeShadowSplitSpheres2.xyz;
     float3 fromCenter3 = positionWS - _CascadeShadowSplitSpheres3.xyz;
-    float4 distances = float4(dot(fromCenter0, fromCenter0), dot(fromCenter1, fromCenter1), dot(fromCenter2, fromCenter2), dot(fromCenter3, fromCenter3));
+    float4 distances2 = float4(dot(fromCenter0, fromCenter0), dot(fromCenter1, fromCenter1), dot(fromCenter2, fromCenter2), dot(fromCenter3, fromCenter3));
 
-    half4 weights = half4(distances < _CascadeShadowSplitSphereRadii);
+    half4 weights = half4(distances2 < _CascadeShadowSplitSphereRadii);
     weights.yzw = saturate(weights.yzw - weights.xyz);
 
     return 4 - dot(weights, half4(4, 3, 2, 1));
@@ -199,7 +218,7 @@ float4 TransformWorldToShadowCoord(float3 positionWS)
 
 half MainLightRealtimeShadow(float4 shadowCoord)
 {
-#if !defined(_MAIN_LIGHT_SHADOWS) || defined(_RECEIVE_SHADOWS_OFF)
+#if !defined(MAIN_LIGHT_CALCULATE_SHADOWS)
     return 1.0h;
 #endif
 
@@ -210,7 +229,7 @@ half MainLightRealtimeShadow(float4 shadowCoord)
 
 half AdditionalLightRealtimeShadow(int lightIndex, float3 positionWS)
 {
-#if !defined(_ADDITIONAL_LIGHT_SHADOWS) || defined(_RECEIVE_SHADOWS_OFF)
+#if !defined(ADDITIONAL_LIGHT_CALCULATE_SHADOWS)
     return 1.0h;
 #endif
 
