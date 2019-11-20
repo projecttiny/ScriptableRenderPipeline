@@ -10,7 +10,7 @@ namespace UnityEngine.Rendering.HighDefinition
         RTHandle m_CameraDepthStencilBuffer = null;
         // Passes like SSR read the stencil per pixel and not per sample, hence we need a resolved version.
         // The best we can do for resolve is an OR of all samples, however this is inaccurate by nature. 
-        RTHandle m_StencilBufferResolved = null;
+        RTHandle m_StencilBufferResolved;
         RTHandle m_CameraDepthBufferMipChain;
         RTHandle m_CameraHalfResDepthBuffer = null;
         HDUtils.PackedMipChainInfo m_CameraDepthBufferMipChainInfo; // This is metadata
@@ -279,6 +279,7 @@ namespace UnityEngine.Rendering.HighDefinition
             {
                 RTHandles.Release(m_CameraDepthStencilMSAABuffer);
                 RTHandles.Release(m_CameraDepthValuesBuffer);
+                RTHandles.Release(m_StencilBufferResolved);
 
                 RTHandles.Release(m_NormalMSAART);
                 RTHandles.Release(m_DepthAsColorMSAART);
