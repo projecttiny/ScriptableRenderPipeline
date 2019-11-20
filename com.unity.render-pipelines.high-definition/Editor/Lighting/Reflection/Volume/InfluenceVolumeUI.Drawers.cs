@@ -17,15 +17,6 @@ namespace UnityEditor.Rendering.HighDefinition
         {
             var provider = new TProvider();
 
-            bool advanced = serialized.editorAdvancedModeEnabled.boolValue;
-            bool newAdvanced = EditorGUILayout.Popup(manipulatonTypeContent, advanced ? 1 : 0, displayedManipulationOptions) == 1;
-            if (advanced ^ newAdvanced)
-                serialized.editorAdvancedModeEnabled.boolValue = advanced = newAdvanced;
-
-            //small piece of init logic previously in the removed Drawer_InfluenceAdvancedSwitch
-            s_BoxBaseHandle.monoHandle = false;
-            s_BoxInfluenceHandle.monoHandle = !advanced;
-            s_BoxInfluenceNormalHandle.monoHandle = !advanced;
             
             EditorGUILayout.PropertyField(serialized.shape, shapeContent);
             switch ((InfluenceShape)serialized.shape.intValue)
@@ -66,6 +57,12 @@ namespace UnityEditor.Rendering.HighDefinition
         static void Drawer_SectionShapeBox(SerializedInfluenceVolume serialized, Editor owner, bool drawOffset, bool drawNormal, bool drawFace)
         {
             bool advanced = serialized.editorAdvancedModeEnabled.boolValue;
+            
+            //small piece of init logic previously in the removed Drawer_InfluenceAdvancedSwitch
+            s_BoxBaseHandle.monoHandle = false;
+            s_BoxInfluenceHandle.monoHandle = !advanced;
+            s_BoxInfluenceNormalHandle.monoHandle = !advanced;
+
             var maxFadeDistance = serialized.boxSize.vector3Value * 0.5f;
             var minFadeDistance = Vector3.zero;
 
@@ -115,6 +112,8 @@ namespace UnityEditor.Rendering.HighDefinition
             EditorGUILayout.EndHorizontal();
 
             GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
+            
+            EditorGUILayout.PropertyField(serialized.editorAdvancedModeEnabled, manipulatonTypeContent);
 
             EditorGUILayout.BeginHorizontal();
             Drawer_AdvancedBlendDistance(serialized, false, maxFadeDistance, blendDistanceContent);
