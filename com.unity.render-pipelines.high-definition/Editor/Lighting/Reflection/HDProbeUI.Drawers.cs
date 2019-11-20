@@ -28,12 +28,7 @@ namespace UnityEditor.Rendering.HighDefinition
         {
             ProbeSettingsOverride displayedCaptureSettings { get; }
             ProbeSettingsOverride displayedAdvancedCaptureSettings { get; }
-            ProbeSettingsOverride overrideableCaptureSettings { get; }
-            ProbeSettingsOverride overrideableAdvancedCaptureSettings { get; }
             ProbeSettingsOverride displayedCustomSettings { get; }
-            ProbeSettingsOverride displayedAdvancedCustomSettings { get; }
-            ProbeSettingsOverride overrideableCustomSettings { get; }
-            ProbeSettingsOverride overrideableAdvancedCustomSettings { get; }
             Type customTextureType { get; }
             ToolBar[] toolbars { get; }
             Dictionary<KeyCode, ToolBar> shortcuts { get; }
@@ -196,41 +191,19 @@ namespace UnityEditor.Rendering.HighDefinition
             public static void DrawCaptureSettings(SerializedHDProbe serialized, Editor owner)
             {
                 var provider = new TProvider();
-                ProbeSettingsUI.Draw(
-                    serialized.probeSettings, owner,
-                    serialized.probeSettingsOverride,
-                    provider.displayedCaptureSettings, provider.overrideableCaptureSettings
-                );
+                ProbeSettingsUI.Draw(serialized.probeSettings, owner, provider.displayedCaptureSettings);
             }
 
             public static void DrawAdvancedCaptureSettings(SerializedHDProbe serialized, Editor owner)
             {
                 var provider = new TProvider();
-                ProbeSettingsUI.Draw(
-                    serialized.probeSettings, owner,
-                    serialized.probeSettingsOverride,
-                    provider.displayedAdvancedCaptureSettings, provider.overrideableAdvancedCaptureSettings
-                );
+                ProbeSettingsUI.Draw(serialized.probeSettings, owner, provider.displayedAdvancedCaptureSettings);
             }
 
             public static void DrawCustomSettings(SerializedHDProbe serialized, Editor owner)
             {
                 var provider = new TProvider();
-                ProbeSettingsUI.Draw(
-                    serialized.probeSettings, owner,
-                    serialized.probeSettingsOverride,
-                    provider.displayedCustomSettings, provider.overrideableCustomSettings
-                );
-            }
-
-            public static void DrawAdvancedCustomSettings(SerializedHDProbe serialized, Editor owner)
-            {
-                var provider = new TProvider();
-                ProbeSettingsUI.Draw(
-                    serialized.probeSettings, owner,
-                    serialized.probeSettingsOverride,
-                    provider.displayedAdvancedCustomSettings, provider.overrideableAdvancedCustomSettings
-                );
+                ProbeSettingsUI.Draw(serialized.probeSettings, owner, provider.displayedCustomSettings);
             }
 
             public static void DrawInfluenceSettings(SerializedHDProbe serialized, Editor owner)

@@ -84,8 +84,6 @@ namespace UnityEditor.Rendering.HighDefinition
             }
         };
 
-        public ProbeSettingsOverride displayedAdvancedCaptureSettings => new ProbeSettingsOverride();
-        ProbeSettingsOverride HDProbeUI.IProbeUISettingsProvider.overrideableCaptureSettings => new ProbeSettingsOverride();
         public ProbeSettingsOverride overrideableAdvancedCaptureSettings => new ProbeSettingsOverride();
 
         ProbeSettingsOverride HDProbeUI.IProbeUISettingsProvider.displayedCustomSettings => new ProbeSettingsOverride
@@ -100,10 +98,6 @@ namespace UnityEditor.Rendering.HighDefinition
                 camera = CameraSettingsFields.none
             }
         };
-        ProbeSettingsOverride HDProbeUI.IProbeUISettingsProvider.overrideableCustomSettings => new ProbeSettingsOverride();
-
-        public ProbeSettingsOverride displayedAdvancedCustomSettings => new ProbeSettingsOverride();
-        public ProbeSettingsOverride overrideableAdvancedCustomSettings => new ProbeSettingsOverride();
 
         Type HDProbeUI.IProbeUISettingsProvider.customTextureType => typeof(Cubemap);
         static readonly HDProbeUI.ToolBar[] k_ToolBars
