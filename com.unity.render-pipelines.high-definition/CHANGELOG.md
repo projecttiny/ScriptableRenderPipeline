@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added XR single-pass test mode to Render Pipeline Debug Window
 - Added debug setting to Render Pipeline Window to list the active XR views
 - Added a new refraction mode for the Lit shader (thin). Which is a box refraction with small thickness values
+- Added the code to support Barn Doors for Area Lights based on a shaderconfig option.
 
 ### Fixed
 - Sorting, undo, labels, layout in the Lighting Explorer.
@@ -171,6 +172,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed spot light missing from ray tracing indirect effects.
 - Fixed a UI bug in the diffusion profile list after fixing them from the wizard.
 - Fixed the hash collision when creating new diffusion profile assets.
+- Fixed a light leaking issue with box light casting shadows (case 1184475)
 
 ### Changed
 - Color buffer pyramid is not allocated anymore if neither refraction nor distortion are enabled
@@ -203,6 +205,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The ray traced screen space shadow history for directional, spot and point lights is discarded if the light transform has changed.
 - Changed the behavior for ray tracing in case a mesh renderer has both transparent and opaque submeshes.
 - Improve history buffer management
+- Remove redundant FrameSettings RealTimePlanarReflection
+- Improved a bit the GC calls generated during the rendering.
 - Change how method for specular occlusions is decided on inspector shader (Lit, LitTesselation, LayeredLit, LayeredLitTessellation)
 
 ## [7.1.1] - 2019-09-05

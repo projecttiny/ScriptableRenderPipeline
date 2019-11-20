@@ -1291,6 +1291,18 @@ namespace UnityEngine.Rendering.HighDefinition
                 // Rescale for cookies and windowing.
                 lightData.right *= 2.0f / Mathf.Max(additionalLightData.shapeWidth, 0.001f);
                 lightData.up    *= 2.0f / Mathf.Max(additionalLightData.shapeHeight, 0.001f);
+
+                // If we have shadows, we need to shrink the valid range so that we don't leak light due to filtering going out of bounds.
+                lightData.boxLightSafeExtent = 1.0f;
+                if (shadowIndex >= 0)
+                {
+                    // We subtract a bit from the safe extent depending on shadow resolution
+                    float shadowRes = additionalLightData.shadowResolution.Value(m_ShadowInitParameters.shadowResolutionPunctual);
+                    shadowRes = Mathf.Clamp(shadowRes, 128.0f, 2048.0f); // Clamp in a somewhat plausible range.
+                    // The idea is to subtract as much as 0.05 for small resolutions.
+                    float shadowResFactor = Mathf.Lerp(0.05f, 0.01f, Mathf.Max(shadowRes / 2048.0f, 0.0f));
+                    lightData.boxLightSafeExtent = 1.0f - shadowResFactor;
+                }
             }
             else if (lightData.lightType == GPULightType.ProjectorPyramid)
             {
@@ -1347,12 +1359,12 @@ namespace UnityEngine.Rendering.HighDefinition
             if (lightData.lightType != GPULightType.Directional && lightData.lightType != GPULightType.ProjectorBox)
             {
                 // Store the squared radius of the light to simulate a fill light.
-                lightData.size = new Vector2(additionalLightData.shapeRadius * additionalLightData.shapeRadius, 0);
+                lightData.size = new Vector4(additionalLightData.shapeRadius * additionalLightData.shapeRadius, 0, 0, 0);
             }
 
             if (lightData.lightType == GPULightType.Rectangle || lightData.lightType == GPULightType.Tube)
             {
-                lightData.size = new Vector2(additionalLightData.shapeWidth, additionalLightData.shapeHeight);
+                lightData.size = new Vector4(additionalLightData.shapeWidth, additionalLightData.shapeHeight, Mathf.Cos(additionalLightData.barnDoorAngle * Mathf.PI / 180.0f), additionalLightData.barnDoorLength);
             }
 
             lightData.lightDimmer           = lightDistanceFade * (additionalLightData.lightDimmer);
@@ -1659,7 +1671,7 @@ namespace UnityEngine.Rendering.HighDefinition
                 case PlanarReflectionProbe planarProbe:
                     {
                         if (probe.mode == ProbeSettings.Mode.Realtime
-                            && !hdCamera.frameSettings.IsEnabled(FrameSettingsField.RealtimePlanarReflection))
+                            && !hdCamera.frameSettings.IsEnabled(FrameSettingsField.PlanarProbe))
                             break;
 
                         var fetchIndex = m_TextureCaches.reflectionPlanarProbeCache.FetchSlice(cmd, probe.texture);
