@@ -64,7 +64,7 @@ void MATERIALFLAGSGEN(uint3 dispatchThreadId : SV_DispatchThreadID, uint threadI
 
         // StencilTexture here contain the result of testing if we are not equal to stencil usage NoLighting. i.e (stencil value != NoLighting). A value > 0 means true.
         // This test if we are the sky/background or a forward opaque (which tag the stencil as NoLighting)
-        uint stencilVal = LOAD_TEXTURE2D_X(_StencilTexture, uCrd).g;
+        uint stencilVal = GetStencilValue(LOAD_TEXTURE2D_X(_StencilTexture, uCrd));
         if (stencilVal > 0)
         {
             PositionInputs posInput = GetPositionInput(uCrd, invScreenSize);
