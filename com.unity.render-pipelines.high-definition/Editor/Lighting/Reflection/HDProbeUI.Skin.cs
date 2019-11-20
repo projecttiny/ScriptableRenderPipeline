@@ -21,7 +21,7 @@ namespace UnityEditor.Rendering.HighDefinition
         internal static readonly GUIContent k_ProxySettingsHeader = EditorGUIUtility.TrTextContent("Projection Settings");
         internal static readonly GUIContent k_InfluenceVolumeHeader = EditorGUIUtility.TrTextContent("Influence Volume");
         internal static readonly GUIContent k_CaptureSettingsHeader = EditorGUIUtility.TrTextContent("Capture Settings");
-        internal static readonly GUIContent k_CustomSettingsHeader = EditorGUIUtility.TrTextContent("Custom Settings");
+        internal static readonly GUIContent k_CustomSettingsHeader = EditorGUIUtility.TrTextContent("Render Settings");
         
         internal static readonly GUIContent k_BakeTypeContent = EditorGUIUtility.TrTextContent("Type",
             "'Baked' uses the 'Auto Baking' mode from the Lighting window. \n" +
