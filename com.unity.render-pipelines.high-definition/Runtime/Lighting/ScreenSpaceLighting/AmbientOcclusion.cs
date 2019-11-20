@@ -17,10 +17,8 @@ namespace UnityEngine.Rendering.HighDefinition
 
         // Temporal only parameters
         public ClampedFloatParameter ghostingReduction = new ClampedFloatParameter(0.5f, 0.0f, 1.0f);
-        public BoolParameter bilateralUpsample = new BoolParameter(true);
 
         // Non-temporal only parameters
-        public ClampedIntParameter directionCount = new ClampedIntParameter(2, 1, 6);
         public ClampedFloatParameter blurSharpness = new ClampedFloatParameter(0.1f, 0.0f, 1.0f);
 
         // Ray tracing parameters
@@ -35,14 +33,9 @@ namespace UnityEngine.Rendering.HighDefinition
             get
             {
                 if (!UsesQualitySettings())
-                {
                     return m_StepCount.value;
-                }
                 else
-                {
-                    int qualityLevel = (int)quality.value;
-                    return GetLightingQualitySettings().AOStepCount[qualityLevel];
-                }
+                    return GetLightingQualitySettings().AOStepCount[(int)quality.value];
             }
             set { m_StepCount.value = value; }
         }
@@ -52,14 +45,9 @@ namespace UnityEngine.Rendering.HighDefinition
             get
             {
                 if (!UsesQualitySettings())
-                {
                     return m_FullResolution.value;
-                }
                 else
-                {
-                    int qualityLevel = (int)quality.value;
-                    return GetLightingQualitySettings().AOFullRes[qualityLevel];
-                }
+                    return GetLightingQualitySettings().AOFullRes[(int)quality.value];
             }
             set { m_FullResolution.value = value; }
     }
@@ -69,16 +57,35 @@ namespace UnityEngine.Rendering.HighDefinition
             get
             {
                 if (!UsesQualitySettings())
-                {
                     return m_MaximumRadiusInPixels.value;
-                }
                 else
-                {
-                    int qualityLevel = (int)quality.value;
-                    return GetLightingQualitySettings().AOMaximumRadiusPixels[qualityLevel];
-                }
+                    return GetLightingQualitySettings().AOMaximumRadiusPixels[(int)quality.value];
             }
             set { m_MaximumRadiusInPixels.value = value; }
+        }
+
+        public bool bilateralUpsample
+        {
+            get
+            {
+                if (!UsesQualitySettings())
+                    return m_BilateralUpsample.value;
+                else
+                    return GetLightingQualitySettings().AOBilateralUpsample[(int)quality.value];
+            }
+            set { m_BilateralUpsample.value = value; }
+        }
+
+        public int directionCount
+        {
+            get
+            {
+                if (!UsesQualitySettings())
+                    return m_DirectionCount.value;
+                else
+                    return GetLightingQualitySettings().AODirectionCount[(int)quality.value];
+            }
+            set { m_DirectionCount.value = value; }
         }
 
         [SerializeField, FormerlySerializedAs("stepCount")]
@@ -90,6 +97,13 @@ namespace UnityEngine.Rendering.HighDefinition
         [SerializeField, FormerlySerializedAs("maximumRadiusInPixels")]
         private ClampedIntParameter m_MaximumRadiusInPixels = new ClampedIntParameter(40, 16, 256);
 
+        // Temporal only parameter
+        [SerializeField, FormerlySerializedAs("bilateralUpsample")]
+        private BoolParameter m_BilateralUpsample = new BoolParameter(true);
+
+        // Non-temporal only parameters
+        [SerializeField, FormerlySerializedAs("directionCount")]
+        private ClampedIntParameter m_DirectionCount = new ClampedIntParameter(2, 1, 6);
     }
 
     partial class AmbientOcclusionSystem
@@ -270,7 +284,8 @@ namespace UnityEngine.Rendering.HighDefinition
                 1.0f / invHalfTanFOV
                 );
 
-            float radInPixels = Mathf.Max(16, settings.maximumRadiusInPixels * ((parameters.runningRes.x * parameters.runningRes.y) / (540.0f * 960.0f)));
+            float scaleFactor = (parameters.runningRes.x * parameters.runningRes.y) / (540.0f * 960.0f);
+            float radInPixels = Mathf.Max(16, settings.maximumRadiusInPixels * Mathf.Sqrt(scaleFactor));
 
             parameters.aoParams2 = new Vector4(
                 rtHandleProperties.currentRenderTargetSize.x,
@@ -304,13 +319,13 @@ namespace UnityEngine.Rendering.HighDefinition
             const float minUpperNudgeLimit = 0.25f;
             upperNudgeFactor = minUpperNudgeLimit + (upperNudgeFactor * (maxUpperNudgeLimit - minUpperNudgeLimit));
             parameters.aoParams4 = new Vector4(
-                settings.directionCount.value,
+                settings.directionCount,
                 upperNudgeFactor,
                 minUpperNudgeLimit,
                 0
             );
 
-            parameters.bilateralUpsample = settings.bilateralUpsample.value;
+            parameters.bilateralUpsample = settings.bilateralUpsample;
             parameters.gtaoCS = m_Resources.shaders.GTAOCS;
             parameters.temporalAccumulation = settings.temporalAccumulation.value;
 
@@ -346,7 +361,7 @@ namespace UnityEngine.Rendering.HighDefinition
             parameters.denoiseKernelCopyHistory = parameters.denoiseAOCS.FindKernel("GTAODenoise_CopyHistory");
 
             parameters.upsampleAndBlurKernel = parameters.upsampleAndBlurAOCS.FindKernel("BlurUpsample");
-            parameters.upsampleAOKernel = parameters.upsampleAndBlurAOCS.FindKernel(settings.bilateralUpsample.value ? "BilateralUpsampling" : "BoxUpsampling");
+            parameters.upsampleAOKernel = parameters.upsampleAndBlurAOCS.FindKernel(settings.bilateralUpsample ? "BilateralUpsampling" : "BoxUpsampling");
 
             parameters.outputWidth = camera.actualWidth;
             parameters.outputHeight = camera.actualHeight;

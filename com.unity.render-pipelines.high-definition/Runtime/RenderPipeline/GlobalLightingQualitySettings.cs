@@ -12,21 +12,33 @@ namespace UnityEngine.Rendering.HighDefinition
             /* Ambient Occlusion */
             AOStepCount[(int)ScalableSettingLevelParameter.Level.Low] = 4;
             AOStepCount[(int)ScalableSettingLevelParameter.Level.Medium] = 6;
-            AOStepCount[(int)ScalableSettingLevelParameter.Level.High] = 20;
+            AOStepCount[(int)ScalableSettingLevelParameter.Level.High] = 16;
 
             AOFullRes[(int)ScalableSettingLevelParameter.Level.Low] = false;
             AOFullRes[(int)ScalableSettingLevelParameter.Level.Medium] = false;
             AOFullRes[(int)ScalableSettingLevelParameter.Level.High] = true;
 
-            AOMaximumRadiusPixels[(int)ScalableSettingLevelParameter.Level.Low] = 24;
+            AOBilateralUpsample[(int)ScalableSettingLevelParameter.Level.Low] = false;
+            AOBilateralUpsample[(int)ScalableSettingLevelParameter.Level.Medium] = true;
+            AOBilateralUpsample[(int)ScalableSettingLevelParameter.Level.High] = true; // N/A
+
+            AODirectionCount[(int)ScalableSettingLevelParameter.Level.Low] = 1;
+            AODirectionCount[(int)ScalableSettingLevelParameter.Level.Medium] = 2;
+            AODirectionCount[(int)ScalableSettingLevelParameter.Level.High] = 4;
+
+            AOMaximumRadiusPixels[(int)ScalableSettingLevelParameter.Level.Low] = 32;
             AOMaximumRadiusPixels[(int)ScalableSettingLevelParameter.Level.Medium] = 40;
             AOMaximumRadiusPixels[(int)ScalableSettingLevelParameter.Level.High] = 80;
 
             /* Contact Shadow */
-            ContactShadowSampleCount[(int)ScalableSettingLevelParameter.Level.Low] = 4;
-            ContactShadowSampleCount[(int)ScalableSettingLevelParameter.Level.Medium] = 8;
+            ContactShadowSampleCount[(int)ScalableSettingLevelParameter.Level.Low] = 6;
+            ContactShadowSampleCount[(int)ScalableSettingLevelParameter.Level.Medium] = 10;
             ContactShadowSampleCount[(int)ScalableSettingLevelParameter.Level.High] = 16;
 
+            /* Screen Space Reflection */
+            SSRMaxRaySteps[(int)ScalableSettingLevelParameter.Level.Low] = 16;
+            SSRMaxRaySteps[(int)ScalableSettingLevelParameter.Level.Medium] = 32;
+            SSRMaxRaySteps[(int)ScalableSettingLevelParameter.Level.High] = 64;
         }
 
         /// <summary>Default GlobalPostProcessingQualitySettings</summary>
@@ -36,11 +48,14 @@ namespace UnityEngine.Rendering.HighDefinition
         public int[] AOStepCount = new int[s_QualitySettingCount];
         public bool[] AOFullRes = new bool[s_QualitySettingCount];
         public int[] AOMaximumRadiusPixels = new int[s_QualitySettingCount];
+        public bool[] AOBilateralUpsample = new bool[s_QualitySettingCount];
+        public int[] AODirectionCount = new int[s_QualitySettingCount];
 
         // Contact Shadows
         public int[] ContactShadowSampleCount = new int[s_QualitySettingCount];
 
-        // TODO: Add SSR
+        // Screen Space Reflections
+        public int[] SSRMaxRaySteps = new int[s_QualitySettingCount];
 
         // TODO: Volumetric fog quality
 

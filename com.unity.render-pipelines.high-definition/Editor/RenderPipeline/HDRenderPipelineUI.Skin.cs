@@ -52,9 +52,14 @@ namespace UnityEditor.Rendering.HighDefinition
         static readonly GUIContent k_AOStepCount = EditorGUIUtility.TrTextContent("Step Count");
         static readonly GUIContent k_AOFullRes = EditorGUIUtility.TrTextContent("Full Resolution");
         static readonly GUIContent k_AOMaxRadiusInPixels = EditorGUIUtility.TrTextContent("Maximum Radius in Pixels");
+        static readonly GUIContent k_AODirectionCount = EditorGUIUtility.TrTextContent("Direction Count");
+        static readonly GUIContent k_AOBilateralUpsample = EditorGUIUtility.TrTextContent("Bilateral Upsample");
 
         static readonly GUIContent k_ContactShadowsSettingsSubTitle = EditorGUIUtility.TrTextContent("Contact Shadows");
         static readonly GUIContent k_ContactShadowsSampleCount = EditorGUIUtility.TrTextContent("Sample Count");
+
+        static readonly GUIContent k_SSRSettingsSubTitle = EditorGUIUtility.TrTextContent("Screen Space Reflection");
+        static readonly GUIContent k_SSRMaxRaySteps = EditorGUIUtility.TrTextContent("Max Ray Steps");
 
         static readonly GUIContent k_DefaultFrameSettingsContent = EditorGUIUtility.TrTextContent("Default Frame Settings For");
 

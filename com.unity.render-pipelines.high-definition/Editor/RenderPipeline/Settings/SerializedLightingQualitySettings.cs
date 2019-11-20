@@ -11,9 +11,14 @@ namespace UnityEditor.Rendering.HighDefinition
         public SerializedProperty AOStepCount;
         public SerializedProperty AOFullRes;
         public SerializedProperty AOMaximumRadiusPixels;
+        public SerializedProperty AODirectionCount;
+        public SerializedProperty AOBilateralUpsample;
 
         // Contact Shadows
         public SerializedProperty ContactShadowSampleCount;
+
+        // SSR
+        public SerializedProperty SSRMaxRaySteps;
 
         public SerializedLightingQualitySettings(SerializedProperty root)
         {
@@ -23,9 +28,14 @@ namespace UnityEditor.Rendering.HighDefinition
             AOStepCount = root.Find((GlobalLightingQualitySettings s) => s.AOStepCount);
             AOFullRes = root.Find((GlobalLightingQualitySettings s) => s.AOFullRes);
             AOMaximumRadiusPixels = root.Find((GlobalLightingQualitySettings s) => s.AOMaximumRadiusPixels);
+            AODirectionCount = root.Find((GlobalLightingQualitySettings s) => s.AODirectionCount);
+            AOBilateralUpsample = root.Find((GlobalLightingQualitySettings s) => s.AOBilateralUpsample);
 
             // Contact Shadows
             ContactShadowSampleCount = root.Find((GlobalLightingQualitySettings s) => s.ContactShadowSampleCount);
+
+            // SSR
+            SSRMaxRaySteps = root.Find((GlobalLightingQualitySettings s) => s.SSRMaxRaySteps);
         }
     }
 }
