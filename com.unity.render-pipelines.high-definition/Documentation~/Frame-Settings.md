@@ -70,7 +70,7 @@ These settings control lighting features for your rendering components. Here you
 | **Shadow Maps**                    | Enable the checkbox to make HDRP process Shadows. This makes this Camera/Reflection Probe capture shadows. |
 | **Contact Shadows**                | Enable the checkbox to make HDRP process [Contact Shadows](Override-Contact-Shadows.html). Enabling this feature causes HDRP to calculate Contact Shadows for this Camera/Reflection Probe. |
 | **Screen Space Shadows**           | [DXR only] Enable the checkbox to allow [Lights](Light-Component.html) to render shadow maps into screen space buffers to reduce lighting Shader complexity. This technique increases processing speed but also increases the memory footprint. |
-| **Shadowmask**                     | Enable the checkbox to make HDRP support Shadow Masks.       |
+| **Shadowmask**                     | Enable the checkbox to make HDRP support the [Shadowmasks lighting mode](Lighting-Mode-Shadowmask.html).       |
 | **Screen Space Refection**         | Enable the checkbox to make HDRP process Screen Space Reflections (SSR). This allows HDRP to calculate SSR for this Camera/Reflection Probe. |
 | **Screen Space Ambient Occlusion** | Enable the checkbox to make HDRP process Screen Space Ambient Occlusion (SSAO). This allows HDRP to calculate SSAO for this Camera/Reflection Probe. |
 | **Subsurface Scattering**          | Enable the checkbox to make HDRP process subsurface scattering. Enabling this feature causes HDRP to simulate how light penetrates surfaces of translucent GameObjects, scatters inside them, and exits from different locations. |
@@ -83,7 +83,7 @@ These settings control lighting features for your rendering components. Here you
 | **Reflection Probe**               | Enable the checkbox to allow this Camera to use [Reflection Probes](Reflection-Probe.html). |
 | **Planar Reflection Probe**        | Enable the checkbox to allow this Camera to use [Planar Reflection Probes](Planar-Reflection-Probe.html). |
 | **Metallic Indirect Fallback**     | Enable the checkbox to render Materials with base color as diffuse for this Camera. This renders metals as diffuse Materials. This is a useful Frame Setting to use for real-time Reflection Probes because it renders metals as diffuse Materials to stop them appearing black when Unity can't calculate several bounces of specular lighting. |
-| **Sky Lighting**                   | Enable the checkbox to allow this Camera to use the Sky Ambient Light Probe. The Sky Ambient Light Probe affects diffuse lighting. |
+| **Sky Reflection**                 | Enable the checkbox to allow this Camera to use the Sky Reflection. The Sky Reflection affects specular lighting. |
 | **Direct Specular Lighting**       | Enable the checkbox to allow this Camera to render direct specular lighting. This allows HDRP to disable direct view dependent lighting. It doesn't save any performance. |
 
 ### Asynchronous Compute Shaders

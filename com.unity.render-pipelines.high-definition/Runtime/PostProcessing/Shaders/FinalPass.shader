@@ -3,6 +3,7 @@ Shader "Hidden/HDRP/FinalPass"
     HLSLINCLUDE
 
         #pragma target 4.5
+        #pragma editor_sync_compilation
         #pragma only_renderers d3d11 ps4 xboxone vulkan metal switch
 
         #pragma multi_compile_local _ FXAA
@@ -91,7 +92,7 @@ Shader "Hidden/HDRP/FinalPass"
             float3 outColor = inputColor.rgb;
             #endif
 
-            float outAlpha = LOAD_TEXTURE2D_X(_AlphaTexture, positionSS);
+            float outAlpha = LOAD_TEXTURE2D_X(_AlphaTexture, positionSS).x;
 
             #if FXAA
             RunFXAA(_InputTexture, sampler_LinearClamp, outColor, positionSS, positionNDC);
