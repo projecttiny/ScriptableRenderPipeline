@@ -6,9 +6,37 @@ namespace UnityEngine.Experimental.Rendering.Universal
 {
     internal static class LightUtility
     {
-        public static bool CheckForChange<T>(T a, ref T b)
+        public static bool CheckForChange(int a, ref int b)
         {
-            bool changed = !Equals(a,b);
+            bool changed = a != b;
+            b = a;
+            return changed;
+        }
+
+        public static bool CheckForChange(float a, ref float b)
+        {
+            bool changed = a != b;
+            b = a;
+            return changed;
+        }
+
+        public static bool CheckForChange(bool a, ref bool b)
+        {
+            bool changed = a != b;
+            b = a;
+            return changed;
+        }
+
+        public static bool CheckForChange(Vector2 a, ref Vector2 b)
+        {
+            bool changed = a != b;
+            b = a;
+            return changed;
+        }
+
+        public static bool CheckForChange(Sprite a, ref Sprite b)
+        {
+            bool changed = !Equals(a, b);
             b = a;
             return changed;
         }
@@ -297,14 +325,14 @@ namespace UnityEngine.Experimental.Rendering.Universal
         }
 
 
-        static CompositeLightReactor2D FindTopMostCompositeLightReactor(LightReactor2D shadowCaster)
+        static CompositeShadowCaster2D FindTopMostCompositeShadowCaster(ShadowCaster2D shadowCaster)
         {
-            CompositeLightReactor2D retGroup = null;
+            CompositeShadowCaster2D retGroup = null;
 
             Transform transformToCheck = shadowCaster.transform.parent;
             while(transformToCheck != null)
             {
-                CompositeLightReactor2D currentGroup = transformToCheck.GetComponent<CompositeLightReactor2D>();
+                CompositeShadowCaster2D currentGroup = transformToCheck.GetComponent<CompositeShadowCaster2D>();
                 if (currentGroup != null)
                     retGroup = currentGroup;
 
@@ -315,12 +343,12 @@ namespace UnityEngine.Experimental.Rendering.Universal
         }
 
 
-        public static bool AddToShadowCasterGroup(LightReactor2D shadowCaster, ref ShadowCasterGroup2D shadowCasterGroup)
+        public static bool AddToShadowCasterGroup(ShadowCaster2D shadowCaster, ref ShadowCasterGroup2D shadowCasterGroup)
         {
-            ShadowCasterGroup2D newShadowCasterGroup = FindTopMostCompositeLightReactor(shadowCaster) as ShadowCasterGroup2D;
+            ShadowCasterGroup2D newShadowCasterGroup = FindTopMostCompositeShadowCaster(shadowCaster) as ShadowCasterGroup2D;
 
             if (newShadowCasterGroup == null)
-                newShadowCasterGroup = shadowCaster.GetComponent<LightReactor2D>();
+                newShadowCasterGroup = shadowCaster.GetComponent<ShadowCaster2D>();
 
             if (newShadowCasterGroup != null && shadowCasterGroup != newShadowCasterGroup)
             {
@@ -332,7 +360,7 @@ namespace UnityEngine.Experimental.Rendering.Universal
             return false;
         }
 
-        public static void RemoveFromShadowCasterGroup(LightReactor2D shadowCaster, ShadowCasterGroup2D shadowCasterGroup)
+        public static void RemoveFromShadowCasterGroup(ShadowCaster2D shadowCaster, ShadowCasterGroup2D shadowCasterGroup)
         {
             if(shadowCasterGroup != null)
                 shadowCasterGroup.UnregisterShadowCaster2D(shadowCaster);

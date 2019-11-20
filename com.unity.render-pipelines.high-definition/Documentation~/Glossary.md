@@ -18,13 +18,19 @@ The effect that occurs when a camera renders an out-of-focus point of light.
 #### channel packing:
 A channel-packed Texture is a Texture which has a separate grayscale image in each of its color channels.
 
-<a name = "Face">
+<a name="ExponentialVarianceShadowMap"></a>
+
+#### Exponential Variance Shadow Map:
+
+A type of shadow map that uses a statistical representation of the Scene's depth distribution and allows for the filtering of data stored in it.
+
+<a name="Face"></a>
 
 #### face:
 
 A face refers to one side of a piece of geometry. The front face is the side of the geometry with the normal.
 
-<a name ="FaceCulling">
+<a name="FaceCulling"></a>
 
 #### face culling:
 

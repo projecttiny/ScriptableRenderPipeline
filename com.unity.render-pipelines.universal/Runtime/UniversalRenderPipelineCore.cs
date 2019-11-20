@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine.Scripting.APIUpdating;
 
+using UnityEngine.Experimental.GlobalIllumination;
+using Lightmapping = UnityEngine.Experimental.GlobalIllumination.Lightmapping;
+
 namespace UnityEngine.Rendering.Universal
 {
     [MovedFrom("UnityEngine.Rendering.LWRP")] public enum MixedLightingSetup
@@ -21,6 +24,7 @@ namespace UnityEngine.Rendering.Universal
         public PostProcessingData postProcessingData;
         public bool supportsDynamicBatching;
         public PerObjectData perObjectData;
+        [Obsolete("killAlphaInFinalBlit is deprecated in the Universal Render Pipeline since it is no longer needed on any supported platform.")]
         public bool killAlphaInFinalBlit;
     }
 
@@ -105,6 +109,7 @@ namespace UnityEngine.Rendering.Universal
         public static readonly string DepthMsaa4 = "_DEPTH_MSAA_4";
 
         public static readonly string LinearToSRGBConversion = "_LINEAR_TO_SRGB_CONVERSION";
+        [Obsolete("The _KILL_ALPHA shader keyword is deprecated in the Universal Render Pipeline.")]
         public static readonly string KillAlpha = "_KILL_ALPHA";
 
         public static readonly string SmaaLow = "_SMAA_PRESET_LOW";
@@ -181,11 +186,71 @@ namespace UnityEngine.Rendering.Universal
                 desc.msaaSamples = msaaSamples;
                 desc.sRGB = (QualitySettings.activeColorSpace == ColorSpace.Linear);
             }
-            
+
             desc.enableRandomWrite = false;
             desc.bindMS = false;
             desc.useDynamicScale = camera.allowDynamicResolution;
             return desc;
         }
+
+        static Lightmapping.RequestLightsDelegate lightsDelegate = (Light[] requests, NativeArray<LightDataGI> lightsOutput) =>
+        {
+            // Editor only.
+#if UNITY_EDITOR
+            LightDataGI lightData = new LightDataGI();
+
+            for (int i = 0; i < requests.Length; i++)
+            {
+                Light light = requests[i];
+                switch (light.type)
+                {
+                    case LightType.Directional:
+                        DirectionalLight directionalLight = new DirectionalLight();
+                        LightmapperUtils.Extract(light, ref directionalLight);
+                        lightData.Init(ref directionalLight);
+                        break;
+                    case LightType.Point:
+                        PointLight pointLight = new PointLight();
+                        LightmapperUtils.Extract(light, ref pointLight);
+                        lightData.Init(ref pointLight);
+                        break;
+                    case LightType.Spot:
+                        SpotLight spotLight = new SpotLight();
+                        LightmapperUtils.Extract(light, ref spotLight);
+                        spotLight.innerConeAngle = light.innerSpotAngle * Mathf.Deg2Rad;
+                        spotLight.angularFalloff = AngularFalloffType.AnalyticAndInnerAngle;
+                        lightData.Init(ref spotLight);
+                        break;
+                    case LightType.Area:
+                        RectangleLight rectangleLight = new RectangleLight();
+                        LightmapperUtils.Extract(light, ref rectangleLight);
+                        rectangleLight.mode = LightMode.Baked;
+                        lightData.Init(ref rectangleLight);
+                        break;
+                    case LightType.Disc:
+                        DiscLight discLight = new DiscLight();
+                        LightmapperUtils.Extract(light, ref discLight);
+                        discLight.mode = LightMode.Baked;
+                        lightData.Init(ref discLight);
+                        break;
+                    default:
+                        lightData.InitNoBake(light.GetInstanceID());
+                        break;
+                }
+
+                lightData.falloff = FalloffType.InverseSquared;
+                lightsOutput[i] = lightData;
+            }
+#else
+            LightDataGI lightData = new LightDataGI();
+
+            for (int i = 0; i < requests.Length; i++)
+            {
+                Light light = requests[i];
+                lightData.InitNoBake(light.GetInstanceID());
+                lightsOutput[i] = lightData;
+            }
+#endif
+        };
     }
 }

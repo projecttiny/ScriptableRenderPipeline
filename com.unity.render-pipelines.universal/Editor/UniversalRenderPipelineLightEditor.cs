@@ -58,8 +58,9 @@ namespace UnityEditor.Rendering.Universal
         public bool bakedShadowRadius { get { return typeIsSame && (lightProperty.type == LightType.Point || lightProperty.type == LightType.Spot) && settings.isBakedOrMixed; } }
         public bool bakedShadowAngle { get { return typeIsSame && lightProperty.type == LightType.Directional && settings.isBakedOrMixed; } }
         public bool shadowOptionsValue { get { return shadowTypeIsSame && lightProperty.shadows != LightShadows.None; } }
-
+#pragma warning disable 618
         public bool bakingWarningValue { get { return !UnityEditor.Lightmapping.bakedGI && lightmappingTypeIsSame && settings.isBakedOrMixed; } }
+#pragma warning restore 618
         public bool showLightBounceIntensity { get { return true; } }
 
         public bool isShadowEnabled { get { return settings.shadowsType.intValue != 0; } }
@@ -116,7 +117,11 @@ namespace UnityEditor.Rendering.Universal
             // we want the fade group to stay hidden.
             using (var group = new EditorGUILayout.FadeGroupScope(1.0f - m_AnimDirOptions.faded))
                 if (group.visible)
+                #if UNITY_2020_1_OR_NEWER
+                    settings.DrawRange();
+                #else
                     settings.DrawRange(m_AnimAreaOptions.target);
+                #endif
 
             // Spot angle
             using (var group = new EditorGUILayout.FadeGroupScope(m_AnimSpotOptions.faded))
@@ -132,6 +137,7 @@ namespace UnityEditor.Rendering.Universal
 
             EditorGUILayout.Space();
 
+            CheckLightmappingConsistency();
             using (var group = new EditorGUILayout.FadeGroupScope(1.0f - m_AnimAreaOptions.faded))
                 if (group.visible)
                 {
@@ -167,6 +173,16 @@ namespace UnityEditor.Rendering.Universal
             serializedObject.ApplyModifiedProperties();
         }
 
+        void CheckLightmappingConsistency()
+        {
+            //Universal render-pipeline only supports baked area light, enforce it as this inspector is the universal one.
+            if (settings.isAreaLightType && settings.lightmapping.intValue != (int)LightmapBakeType.Baked)
+            {
+                settings.lightmapping.intValue = (int)LightmapBakeType.Baked;
+                serializedObject.ApplyModifiedProperties();
+            }
+        }
+
         void SetOptions(AnimBool animBool, bool initialize, bool targetValue)
         {
             if (initialize)
@@ -195,9 +211,7 @@ namespace UnityEditor.Rendering.Universal
 
         void DrawSpotAngle()
         {
-            EditorGUILayout.Slider(settings.spotAngle, 1f, 179f, s_Styles.SpotAngle);
-            // Disable until baking of inner angle works
-            //settings.DrawInnerAndOuterSpotAngle();
+            settings.DrawInnerAndOuterSpotAngle();
         }
 
         void DrawAdditionalShadowData()
@@ -277,7 +291,7 @@ namespace UnityEditor.Rendering.Universal
                     settings.DrawBakedShadowAngle();
 
             // Runtime shadows - shadow strength, resolution and near plane offset
-            // Bias is handled differently in LWRP
+            // Bias is handled differently in UniversalRP
             using (var group = new EditorGUILayout.FadeGroupScope(show * m_AnimRuntimeOptions.faded))
             {
                 if (group.visible)

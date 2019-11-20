@@ -29,6 +29,8 @@ namespace UnityEditor.Rendering.HighDefinition
 
         protected Dictionary<HDShadowFilteringQuality, ShaderKeyword> m_ShadowVariants;
 
+        public virtual int Priority => 0;
+
         public BaseShaderPreprocessor()
         {
             // NOTE: All these keyword should be automatically stripped so there's no need to handle them ourselves.
@@ -74,7 +76,7 @@ namespace UnityEditor.Rendering.HighDefinition
             var shaderMaterialLevel = inputData.shaderKeywordSet.GetMaterialQuality();
             // if there are material quality defines in this shader
             // and they don't match the material quality accepted by the hdrp asset
-            if (shaderMaterialLevel != 0 && (hdrpAsset.materialQualityLevels & shaderMaterialLevel) == 0)
+            if (shaderMaterialLevel != 0 && (hdrpAsset.availableMaterialQualityLevels & shaderMaterialLevel) == 0)
             {
                 // then strip this variant
                 return true;

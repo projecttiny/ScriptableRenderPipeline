@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityObject = UnityEngine.Object;
 using System.IO;
+using UnityEditor.VersionControl;
 
 namespace  UnityEditor.VFX.UI
 {
@@ -30,6 +31,7 @@ namespace  UnityEditor.VFX.UI
                     {Event.KeyboardEvent("^>"), view.FrameNext },
                     {Event.KeyboardEvent("F7"), view.Compile},
                     {Event.KeyboardEvent("#d"), view.OutputToDot},
+                    {Event.KeyboardEvent("^&d"), view.DuplicateSelectionWithEdges},
                     {Event.KeyboardEvent("^#d"), view.OutputToDotReduced},
                     {Event.KeyboardEvent("#c"), view.OutputToDotConstantFolding},
                     {Event.KeyboardEvent("^r"), view.ReinitComponents},
@@ -40,7 +42,7 @@ namespace  UnityEditor.VFX.UI
         }
 
         public static VFXViewWindow currentWindow;
-        
+
         [MenuItem("Window/Visual Effects/Visual Effect Graph",false,3011)]
         public static void ShowWindow()
         {
@@ -221,6 +223,11 @@ namespace  UnityEditor.VFX.UI
             rootVisualElement.RemoveManipulator(m_ShortcutHandler);
         }
 
+        void OnFocus()
+        {
+            graphView.OnFocus();
+        }
+
         public bool autoCompile {get; set; }
 
         public bool autoCompileDependent { get; set; }
@@ -265,6 +272,20 @@ namespace  UnityEditor.VFX.UI
                 VFXViewModicationProcessor.assetMoved = false;
             }
             titleContent.text = filename;
+
+            if (graphView?.controller?.model?.visualEffectObject != null)
+            {
+                graphView.checkoutButton.visible = true;
+                if (!AssetDatabase.IsOpenForEdit(graphView.controller.model.visualEffectObject,
+                    StatusQueryOptions.UseCachedIfPossible) && Provider.isActive && Provider.enabled)
+                {
+                    graphView.checkoutButton.SetEnabled(true);
+                }
+                else
+                {
+                    graphView.checkoutButton.SetEnabled(false);
+                }
+            }
         }
 
         [SerializeField]

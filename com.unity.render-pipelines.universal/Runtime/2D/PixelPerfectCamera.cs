@@ -57,7 +57,23 @@ namespace UnityEngine.Experimental.Rendering.Universal
         /// <summary>
         /// Ratio of the rendered Sprites compared to their original size (readonly).
         /// </summary>
-        public int pixelRatio { get { return m_Internal.zoom; } }
+        public int pixelRatio
+        {
+            get
+            {
+                if (m_CinemachineCompatibilityMode)
+                {
+                    if (m_UpscaleRT)
+                        return m_Internal.zoom * m_Internal.cinemachineVCamZoom;
+                    else
+                        return m_Internal.cinemachineVCamZoom;
+                }
+                else
+                {
+                    return m_Internal.zoom;
+                }
+            }
+        }
 
         /// <summary>
         /// Round a arbitrary position to an integer pixel position. Works in world space.
@@ -81,6 +97,21 @@ namespace UnityEngine.Experimental.Rendering.Universal
             return result;
         }
 
+        /// <summary>
+        /// Find a pixel-perfect orthographic size as close to targetOrthoSize as possible. Used by Cinemachine to solve compatibility issues with Pixel Perfect Camera.
+        /// </summary>
+        /// <param name="targetOrthoSize">Orthographic size from the live Cinemachine Virtual Camera.</param>
+        /// <returns>The corrected orthographic size.</returns>
+        public float CorrectCinemachineOrthoSize(float targetOrthoSize)
+        {
+            m_CinemachineCompatibilityMode = true;
+
+            if (m_Internal == null)
+                return targetOrthoSize;
+            else
+                return m_Internal.CorrectCinemachineOrthoSize(targetOrthoSize);
+        }
+
         [SerializeField] int    m_AssetsPPU         = 100;
         [SerializeField] int    m_RefResolutionX    = 320;
         [SerializeField] int    m_RefResolutionY    = 180;
@@ -92,6 +123,7 @@ namespace UnityEngine.Experimental.Rendering.Universal
 
         Camera m_Camera;
         PixelPerfectCameraInternal m_Internal;
+        bool m_CinemachineCompatibilityMode;
 
         internal bool isRunning
         {
@@ -147,6 +179,20 @@ namespace UnityEngine.Experimental.Rendering.Universal
             m_Internal.originalOrthoSize = m_Camera.orthographicSize;
         }
 
+        void LateUpdate()
+        {
+#if UNITY_EDITOR
+            if (!UnityEditor.EditorApplication.isPaused)
+#endif
+            {
+                // Reset the Cinemachine compatibility mode every frame.
+                // If any CinemachinePixelPerfect extension is present, they will turn this on 
+                // at a later time (during CinemachineBrain's LateUpdate(), which is 
+                // guaranteed to be after PixelPerfectCamera's LateUpdate()).
+                m_CinemachineCompatibilityMode = false;
+            }
+        }
+
         void OnBeginCameraRendering(ScriptableRenderContext context, Camera camera)
         {
             if (camera != m_Camera)
@@ -164,7 +210,14 @@ namespace UnityEngine.Experimental.Rendering.Universal
             else
                 m_Camera.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
 
-            m_Camera.orthographicSize = m_Internal.orthoSize;
+            // In Cinemachine compatibility mode the control over orthographic size should
+            // be given to the virtual cameras, whose orthographic sizes will be corrected to
+            // be pixel-perfect. This way when there's blending between virtual cameras, we
+            // can have temporary not-pixel-perfect but smooth transitions.
+            if (!m_CinemachineCompatibilityMode)
+            {
+                m_Camera.orthographicSize = m_Internal.orthoSize;
+            }
 
             UnityEngine.U2D.PixelPerfectRendering.pixelSnapSpacing = m_Internal.unitsPerPixel;
         }
@@ -202,12 +255,10 @@ namespace UnityEngine.Experimental.Rendering.Universal
 #endif
         }
 
+#if DEVELOPMENT_BUILD || UNITY_EDITOR
         // Show on-screen warning about invalid render resolutions.
         void OnGUI()
         {
-            if (!Debug.isDebugBuild && !Application.isEditor)
-                return;
-
 #if UNITY_EDITOR
             if (!UnityEditor.EditorApplication.isPlaying && !runInEditMode)
                 return;
@@ -236,6 +287,7 @@ namespace UnityEngine.Experimental.Rendering.Universal
 
             GUI.color = oldColor;
         }
+#endif
 
 #if UNITY_EDITOR
         void OnPlayModeChanged(UnityEditor.PlayModeStateChange state)
