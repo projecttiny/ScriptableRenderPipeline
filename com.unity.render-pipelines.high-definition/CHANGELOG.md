@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added after post process injection point for custom passes
 - Added basic alpha compositing support - Alpha is available afterpostprocess when using FP16 buffer format.
 - Added falloff distance on Reflection Probe and Planar Reflection Probe
+- Added Backplate projection from the HDRISky
+- Added Shadow Matte in UnlitMasterNode, which only received shadow without lighting
 - Added hability to name LightLayers in HDRenderPipelineAsset
 - Added a range compression factor for Reflection Probe and Planar Reflection Probe to avoid saturation of colors.
 - Added path tracing support for directional, point and spot lights, as well as emission from Lit and Unlit.
@@ -31,6 +33,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added a transmission multiplier for directional lights
 - Added XR single-pass test mode to Render Pipeline Debug Window
 - Added debug setting to Render Pipeline Window to list the active XR views
+- Added a new refraction mode for the Lit shader (thin). Which is a box refraction with small thickness values
+- Added the code to support Barn Doors for Area Lights based on a shaderconfig option.
 
 ### Fixed
 - Sorting, undo, labels, layout in the Lighting Explorer.
@@ -165,6 +169,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed minor naming issues in ShaderGraph settings
 - VFX: Removed z-fight glitches that could appear when using deferred depth prepass and lit quad primitives
 - VFX: Preserve specular option for lit outputs (matches HDRP lit shader)
+- Fixed an issue with Metal Shader Compiler and GTAO shader for metal
+- Fixed resources load issue while upgrading HDRP package.
+- Fix LOD fade mask by accounting for field of view
+- Fixed spot light missing from ray tracing indirect effects.
+- Fixed a UI bug in the diffusion profile list after fixing them from the wizard.
+- Fixed the hash collision when creating new diffusion profile assets.
+- Fixed a light leaking issue with box light casting shadows (case 1184475)
+- Fixed Cookie texture type in the cookie slot of lights (Now displays a warning because it is not supported).
+- Fixed a nullref that happens when using the Shuriken particle light module
+- Fixed alignment in Wizard
+- Fixed text overflow in Wizard's helpbox
+- Fixed Wizard button fix all that was not automatically grab all required fixes
+- Fixed VR tab for MacOS in Wizard
+- Fixed local config package workflow in Wizard
 - Fixed persistence of ShowChromeGizmo and moved it to toolbar for coherency in ReflectionProbe and PlanarReflectionProbe.
 - Fixed Alignement issue in ReflectionProbe and PlanarReflectionProbe.
 - Fixed Prefab override workflow issue in ReflectionProbe and PlanarReflectionProbe.
@@ -201,6 +219,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The ray traced screen space shadow history for directional, spot and point lights is discarded if the light transform has changed.
 - Changed the behavior for ray tracing in case a mesh renderer has both transparent and opaque submeshes.
 - Improve history buffer management
+- Replaced PlayerSettings.virtualRealitySupported with XRGraphics.tryEnable.
+- Remove redundant FrameSettings RealTimePlanarReflection
+- Improved a bit the GC calls generated during the rendering.
 
 ## [7.1.1] - 2019-09-05
 
