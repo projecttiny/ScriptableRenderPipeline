@@ -82,7 +82,13 @@ namespace UnityEditor.Rendering.HighDefinition
                 PropertyFieldWithoutToggle(ProbeSettingsFields.proxyMirrorRotationProxySpace, serialized.proxyMirrorRotationProxySpace, EditorGUIUtility.TrTextContent("Mirror Rotation", "Sets the rotation of the Planar Reflection Probe relative to the Transform Rotation."), displayedFields.probe,
                     (p, l) =>
                     {
-                        EditorGUILayout.PropertyField(p, l);
+                        //Quaternion are handled strangely for PrefabOverride. Need to scope it as it was not drawn by PropertyField
+                        Rect lineRect = EditorGUILayout.GetControlRect();
+                        EditorGUI.BeginProperty(lineRect, l, p);
+                        {
+                            EditorGUI.PropertyField(lineRect, p, l);
+                        }
+                        EditorGUI.EndProperty();
                         HDProbeUI.Drawer_ToolBarButton(HDProbeUI.ToolBar.MirrorRotation, owner, GUILayout.Width(28f), GUILayout.MinHeight(22f));
                     }
                 );
