@@ -456,6 +456,34 @@ namespace UnityEngine.Rendering.HighDefinition
             }
         }
 
+        class ResolveStencilPassData
+        {
+            public RenderGraphResource inputDepth;
+            public RenderGraphMutableResource outputStencil;
+        }
+
+        void ResolveStencilBufferIfNeeded(RenderGraph renderGraph, HDCamera hdCamera, ref PrepassOutput output)
+        {
+            bool isMSAAEnabled = hdCamera.frameSettings.IsEnabled(FrameSettingsField.MSAA);
+            if (isMSAAEnabled)
+            {
+                using (var builder = renderGraph.AddRenderPass<ResolveStencilPassData>("Resolve Stencil", out var passData, CustomSamplerId.ResolveStencilBuffer.GetSampler()))
+                {
+                    passData.inputDepth = output.depthBuffer;
+                    passData.outputStencil = builder.WriteTexture(renderGraph.CreateTexture(new TextureDesc(Vector2.one, true, true) { colorFormat = GraphicsFormat.R8_UInt, name = "StencilBufferResolved" }));
+                    builder.SetRenderFunc(
+                       (ResolveStencilPassData data, RenderGraphContext context) =>
+                       {
+                           var res = context.resources;
+                           ResolveStencilBufferIfNeeded(hdCamera,
+                               res.GetTexture(data.inputDepth),
+                               res.GetTexture(data.outputStencil),
+                               context.cmd);
+                       }
+                   );
+                }
+            }
+        }
         class RenderDBufferPassData
         {
             public RenderGraphMutableResource[] mrt = new RenderGraphMutableResource[Decal.GetMaterialDBufferCount()];
