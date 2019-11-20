@@ -152,11 +152,6 @@ namespace UnityEditor.Rendering.HighDefinition
             // Drawers
             public static void DrawPrimarySettings(SerializedHDProbe serialized, Editor owner)
             {
-                const string modeTooltip = "'Baked' uses the 'Auto Baking' mode from the Lighting window. " +
-                    "If it is enabled then baking is automatic otherwise manual bake is needed (use the bake button below). \n" +
-                    "'Custom' can be used if a custom capture is wanted. \n" +
-                    "'Realtime' can be used to dynamically re-render the capture during runtime (every frame).";
-
                 var provider = new TProvider();
 
 #if !ENABLE_BAKED_PLANAR
@@ -169,9 +164,7 @@ namespace UnityEditor.Rendering.HighDefinition
 #endif
 
                 // Probe Mode
-                EditorGUI.showMixedValue = serialized.probeSettings.mode.hasMultipleDifferentValues;
-                EditorGUILayout.IntPopup(serialized.probeSettings.mode, k_ModeContents, k_ModeValues, EditorGUIUtility.TrTextContent("Type", modeTooltip));
-                EditorGUI.showMixedValue = false;
+                EditorGUILayout.IntPopup(serialized.probeSettings.mode, k_ModeContents, k_ModeValues, k_BakeTypeContent);
 
 #if !ENABLE_BAKED_PLANAR
                 }
@@ -181,21 +174,20 @@ namespace UnityEditor.Rendering.HighDefinition
                 {
                     case ProbeSettings.Mode.Realtime:
                         {
-                            EditorGUI.showMixedValue = serialized.probeSettings.realtimeMode.hasMultipleDifferentValues;
                             EditorGUILayout.PropertyField(serialized.probeSettings.realtimeMode);
-                            EditorGUI.showMixedValue = false;
                             break;
                         }
                     case ProbeSettings.Mode.Custom:
                         {
-                            EditorGUI.showMixedValue = serialized.customTexture.hasMultipleDifferentValues;
-                            EditorGUI.BeginChangeCheck();
-                            var customTexture = EditorGUILayout.ObjectField(
-                                EditorGUIUtility.TrTextContent("Texture"), serialized.customTexture.objectReferenceValue, provider.customTextureType, false
-                            );
-                            EditorGUI.showMixedValue = false;
-                            if (EditorGUI.EndChangeCheck())
-                                serialized.customTexture.objectReferenceValue = customTexture;
+                            Rect lineRect = EditorGUILayout.GetControlRect(true, 64);
+                            EditorGUI.BeginProperty(lineRect, k_CustomTextureContent, serialized.customTexture);
+                            {
+                                EditorGUI.BeginChangeCheck();
+                                var customTexture = EditorGUI.ObjectField(lineRect, k_CustomTextureContent, serialized.customTexture.objectReferenceValue, provider.customTextureType, false);
+                                if (EditorGUI.EndChangeCheck())
+                                    serialized.customTexture.objectReferenceValue = customTexture;
+                            }
+                            EditorGUI.EndProperty();
                             break;
                         }
                 }

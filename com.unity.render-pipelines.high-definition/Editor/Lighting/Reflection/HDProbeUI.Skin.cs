@@ -22,6 +22,13 @@ namespace UnityEditor.Rendering.HighDefinition
         internal static readonly GUIContent k_InfluenceVolumeHeader = EditorGUIUtility.TrTextContent("Influence Volume");
         internal static readonly GUIContent k_CaptureSettingsHeader = EditorGUIUtility.TrTextContent("Capture Settings");
         internal static readonly GUIContent k_CustomSettingsHeader = EditorGUIUtility.TrTextContent("Custom Settings");
+        
+        internal static readonly GUIContent k_BakeTypeContent = EditorGUIUtility.TrTextContent("Type",
+            "'Baked' uses the 'Auto Baking' mode from the Lighting window. \n" +
+            "If it is enabled then baking is automatic otherwise manual bake is needed (use the bake button below). \n" +
+            "'Custom' can be used if a custom capture is wanted. \n" +
+            "'Realtime' can be used to dynamically re-render the capture during runtime (every frame).");
+        internal static readonly GUIContent k_CustomTextureContent = EditorGUIUtility.TrTextContent("Texture");
 
         static readonly Dictionary<ToolBar, GUIContent> k_ToolbarContents = new Dictionary<ToolBar, GUIContent>
         {
