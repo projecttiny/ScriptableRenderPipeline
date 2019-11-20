@@ -161,6 +161,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed alignment issue in Preset for Camera.
 - Fixed alignment issue in Physical part for Camera.
 - Fixed FrameSettings multi-edition.
+- Fixed performance issue derived from copying stencil buffer.
 
 ### Changed
 - Color buffer pyramid is not allocated anymore if neither refraction nor distortion are enabled
