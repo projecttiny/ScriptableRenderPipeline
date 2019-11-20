@@ -8,7 +8,7 @@ namespace UnityEngine.Rendering.HighDefinition
         RTHandle m_NormalRT = null;
         RTHandle m_MotionVectorsRT = null;
         RTHandle m_CameraDepthStencilBuffer = null;
-        // Passes like SSR read the stencil per pixel and not per sample, hence we need a resolved version.
+        // Needed in case passes will need to read stencil per pixel rather than per sample
         // The best we can do for resolve is an OR of all samples, however this is inaccurate by nature. 
         RTHandle m_StencilBufferResolved;
         RTHandle m_CameraDepthBufferMipChain;
