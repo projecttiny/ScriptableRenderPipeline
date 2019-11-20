@@ -70,11 +70,12 @@ namespace UnityEngine.Rendering.HighDefinition
             public RenderGraphMutableResource   resolvedDepthBuffer;
             public RenderGraphMutableResource   resolvedNormalBuffer;
             public RenderGraphMutableResource   resolvedMotionVectorsBuffer;
+            public RenderGraphMutableResource   resolvedStencilBuffer;
 
             // Copy of the resolved depth buffer with mip chain
             public RenderGraphMutableResource   depthPyramidTexture;
 
-            public RenderGraphResource          stencilBufferCopy;
+            public RenderGraphResource          stencilBuffer;
         }
 
         RenderGraphMutableResource CreateDepthBuffer(RenderGraph renderGraph, bool msaa)
@@ -127,6 +128,8 @@ namespace UnityEngine.Rendering.HighDefinition
                 RenderObjectsMotionVectors(renderGraph, cullingResults, hdCamera, result);
             }
 
+            ResolveStencilBufferIfNeeded(renderGraph, hdCamera, ref result);
+
             // At this point in forward all objects have been rendered to the prepass (depth/normal/motion vectors) so we can resolve them
             ResolvePrepassBuffers(renderGraph, hdCamera, ref result);
 
@@ -145,8 +148,7 @@ namespace UnityEngine.Rendering.HighDefinition
 
             RenderCameraMotionVectors(renderGraph, hdCamera, result.depthPyramidTexture, result.resolvedMotionVectorsBuffer);
 
-            // TODO TODO TODO_FCC: ADD MSAA CASE
-            result.stencilBufferCopy = result.depthBuffer;
+            result.stencilBuffer = msaa ? result.resolvedStencilBuffer : result.depthBuffer;
 
             StopSinglePass(renderGraph, hdCamera);
 
@@ -480,7 +482,9 @@ namespace UnityEngine.Rendering.HighDefinition
                                res.GetTexture(data.outputStencil),
                                context.cmd);
                        }
-                   );
+                    );
+
+                    output.resolvedStencilBuffer = passData.outputStencil;
                 }
             }
         }
