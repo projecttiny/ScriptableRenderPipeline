@@ -2711,8 +2711,7 @@ namespace UnityEngine.Rendering.HighDefinition
 
                     if(resources.stencilTexture.rt.stencilFormat == GraphicsFormat.None)
                     {
-                        Debug.Assert(false, "todo todo TODO TODO_FCC: Fix msaa before PR");
-                        //cmd.SetComputeTextureParam(parameters.buildMaterialFlagsShader, buildMaterialFlagsKernel, HDShaderIDs._StencilTexture, resources.stencilTexture);
+                        cmd.SetComputeTextureParam(parameters.buildMaterialFlagsShader, buildMaterialFlagsKernel, HDShaderIDs._StencilTexture, resources.stencilTexture);
                     }
                     else
                     {
@@ -2882,11 +2881,10 @@ namespace UnityEngine.Rendering.HighDefinition
             using (new ProfilingSample(cmd, "Build Light List"))
             {
                 var parameters = PrepareBuildGPULightListParameters(hdCamera);
-                // TODO_FCC: TODO TODO FIX MSAA BEFORE PR.
                 var resources = PrepareBuildGPULightListResources(
                     m_TileAndClusterData,
                     m_SharedRTManager.GetDepthStencilBuffer(hdCamera.frameSettings.IsEnabled(FrameSettingsField.MSAA)),
-                    m_SharedRTManager.GetDepthStencilBuffer(false)
+                    m_SharedRTManager.GetStencilBuffer(hdCamera.frameSettings.IsEnabled(FrameSettingsField.MSAA))
                 );
 
                 bool tileFlagsWritten = false;
