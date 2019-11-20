@@ -84,15 +84,17 @@ namespace UnityEditor.Rendering.HighDefinition
             }
         };
 
-        public ProbeSettingsOverride overrideableAdvancedCaptureSettings => new ProbeSettingsOverride();
+        public ProbeSettingsOverride displayedAdvancedCaptureSettings => new ProbeSettingsOverride
+        {
+            probe = ProbeSettingsFields.lightingRangeCompression
+        };
 
         ProbeSettingsOverride HDProbeUI.IProbeUISettingsProvider.displayedCustomSettings => new ProbeSettingsOverride
         {
             probe = ProbeSettingsFields.lightingLightLayer
                 | ProbeSettingsFields.lightingMultiplier
                 | ProbeSettingsFields.lightingWeight
-                | ProbeSettingsFields.lightingFadeDistance
-                | ProbeSettingsFields.lightingRangeCompression,
+                | ProbeSettingsFields.lightingFadeDistance,
             camera = new CameraSettingsOverride
             {
                 camera = CameraSettingsFields.none

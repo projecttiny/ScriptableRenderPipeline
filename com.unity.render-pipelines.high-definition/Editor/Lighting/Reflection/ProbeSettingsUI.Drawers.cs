@@ -86,9 +86,6 @@ namespace UnityEditor.Rendering.HighDefinition
                         HDProbeUI.Drawer_ToolBarButton(HDProbeUI.ToolBar.MirrorRotation, owner, GUILayout.Width(28f), GUILayout.MinHeight(22f));
                     }
                 );
-                PropertyFieldWithFlagToggleIfDisplayed(ProbeSettingsFields.lightingRangeCompression, serialized.lightingRangeCompressionFactor, EditorGUIUtility.TrTextContent("Range Compression Factor", "The result of the rendering of the probe will be divided by this factor. When the probe is read, this factor is undone as the probe data is read. This is to simply avoid issues with values clamping due to precision of the storing format."), @override.probe, displayedFields.probe, overridableFields.probe);
-
-                EditorGUILayout.Space();
             }
 
             CameraSettingsUI.Draw(serialized.cameraSettings, owner, displayedFields.camera);

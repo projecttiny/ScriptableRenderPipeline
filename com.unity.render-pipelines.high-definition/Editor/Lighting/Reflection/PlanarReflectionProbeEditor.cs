@@ -261,7 +261,8 @@ namespace UnityEditor.Rendering.HighDefinition
         public ProbeSettingsOverride displayedAdvancedCaptureSettings => new ProbeSettingsOverride
         {
             probe = ProbeSettingsFields.proxyMirrorPositionProxySpace
-                    | ProbeSettingsFields.proxyMirrorRotationProxySpace,
+                | ProbeSettingsFields.proxyMirrorRotationProxySpace
+                | ProbeSettingsFields.lightingRangeCompression,
             camera = new CameraSettingsOverride()
         };
 
