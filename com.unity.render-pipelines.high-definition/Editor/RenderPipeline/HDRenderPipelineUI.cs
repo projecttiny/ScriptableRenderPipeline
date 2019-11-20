@@ -35,10 +35,10 @@ namespace UnityEditor.Rendering.HighDefinition
             BloomQuality = 1 << 19,
             ChromaticAberrationQuality = 1 << 20,
             XR = 1 << 21,
-            LightLayer = 1 << 22
+            LightLayer = 1 << 22,
             SSAOQuality = 1 << 23,
-            ContactShadowQuality = 1 << 24
-            LightingQuality = 1 << 25,
+            ContactShadowQuality = 1 << 24,
+            LightingQuality = 1 << 25
         }
 
         static readonly ExpandedState<Expandable, HDRenderPipelineAsset> k_ExpandedState = new ExpandedState<Expandable, HDRenderPipelineAsset>(Expandable.CameraFrameSettings | Expandable.General, "HDRP");
@@ -86,14 +86,13 @@ namespace UnityEditor.Rendering.HighDefinition
                     ),
                 CED.FoldoutGroup(k_MaterialSectionTitle, Expandable.Material, k_ExpandedState, Drawer_SectionMaterialUnsorted),
                 CED.FoldoutGroup(k_PostProcessSectionTitle, Expandable.PostProcess, k_ExpandedState, Drawer_SectionPostProcessSettings),
-                CED.FoldoutGroup(k_PostProcessQualitySubTitle, Expandable.PostProcessQuality, k_ExpandedState, 
+                CED.FoldoutGroup(k_PostProcessQualitySubTitle, Expandable.PostProcessQuality, k_ExpandedState,
                     CED.FoldoutGroup(k_DepthOfFieldQualitySettings, Expandable.DepthOfFieldQuality, k_ExpandedState, FoldoutOption.Indent | FoldoutOption.SubFoldout | FoldoutOption.NoSpaceAtEnd, Drawer_SectionDepthOfFieldQualitySettings),
                     CED.FoldoutGroup(k_MotionBlurQualitySettings, Expandable.MotionBlurQuality, k_ExpandedState, FoldoutOption.Indent | FoldoutOption.SubFoldout | FoldoutOption.NoSpaceAtEnd, Drawer_SectionMotionBlurQualitySettings),
                     CED.FoldoutGroup(k_BloomQualitySettings, Expandable.BloomQuality, k_ExpandedState, FoldoutOption.Indent | FoldoutOption.SubFoldout | FoldoutOption.NoSpaceAtEnd, Drawer_SectionBloomQualitySettings),
                     CED.FoldoutGroup(k_ChromaticAberrationQualitySettings, Expandable.ChromaticAberrationQuality, k_ExpandedState, FoldoutOption.Indent | FoldoutOption.SubFoldout | FoldoutOption.NoSpaceAtEnd, Drawer_SectionChromaticAberrationQualitySettings)
                     ),
-                    )
-                CED.FoldoutGroup(k_XrTitle, Expandable.XR, k_ExpandedState, Drawer_SectionXRSettings)
+                CED.FoldoutGroup(k_XrTitle, Expandable.XR, k_ExpandedState, Drawer_SectionXRSettings),
 
                 CED.FoldoutGroup(k_LightingQualitySettings, Expandable.LightingQuality, k_ExpandedState,
                     CED.FoldoutGroup(k_SSAOQualitySettingSubTitle, Expandable.SSAOQuality, k_ExpandedState, FoldoutOption.Indent | FoldoutOption.SubFoldout | FoldoutOption.NoSpaceAtEnd, Drawer_SectionSSAOQualitySettings),
@@ -719,21 +718,21 @@ namespace UnityEditor.Rendering.HighDefinition
             m_ShowAOLowQualitySection = EditorGUILayout.Foldout(m_ShowAOLowQualitySection, k_LowQualityContent);
             if (m_ShowAOLowQualitySection)
             {
-                int quality = (int)VolumeQualitySettingsLevels.Low;
+                int quality = (int)ScalableSettingLevelParameter.Level.Low;
                 DrawAOQualitySetting(serialized, quality);
             }
 
             m_ShowAOMediumQualitySection = EditorGUILayout.Foldout(m_ShowAOMediumQualitySection, k_MediumQualityContent);
             if (m_ShowAOMediumQualitySection)
             {
-                int quality = (int)VolumeQualitySettingsLevels.Medium;
+                int quality = (int)ScalableSettingLevelParameter.Level.Medium;
                 DrawAOQualitySetting(serialized, quality);
             }
 
             m_ShowAOHighQualitySection = EditorGUILayout.Foldout(m_ShowAOHighQualitySection, k_HighQualityContent);
             if (m_ShowAOHighQualitySection)
             {
-                int quality = (int)VolumeQualitySettingsLevels.High;
+                int quality = (int)ScalableSettingLevelParameter.Level.High;
                 DrawAOQualitySetting(serialized, quality);
             }
         }
@@ -747,21 +746,21 @@ namespace UnityEditor.Rendering.HighDefinition
             m_ShowContactShadowLowQualitySection = EditorGUILayout.Foldout(m_ShowContactShadowLowQualitySection, k_LowQualityContent);
             if (m_ShowContactShadowLowQualitySection)
             {
-                int quality = (int)VolumeQualitySettingsLevels.Low;
+                int quality = (int)ScalableSettingLevelParameter.Level.Low;
                 EditorGUILayout.PropertyField(serialized.renderPipelineSettings.lightingQualitySettings.ContactShadowSampleCount.GetArrayElementAtIndex(quality), k_ContactShadowsSampleCount);
             }
 
             m_ShowContactShadowMediumQualitySection = EditorGUILayout.Foldout(m_ShowContactShadowMediumQualitySection, k_MediumQualityContent);
             if (m_ShowContactShadowMediumQualitySection)
             {
-                int quality = (int)VolumeQualitySettingsLevels.Medium;
+                int quality = (int)ScalableSettingLevelParameter.Level.Medium;
                 EditorGUILayout.PropertyField(serialized.renderPipelineSettings.lightingQualitySettings.ContactShadowSampleCount.GetArrayElementAtIndex(quality), k_ContactShadowsSampleCount);
             }
 
             m_ShowContactShadowHighQualitySection = EditorGUILayout.Foldout(m_ShowContactShadowHighQualitySection, k_HighQualityContent);
             if (m_ShowContactShadowHighQualitySection)
             {
-                int quality = (int)VolumeQualitySettingsLevels.High;
+                int quality = (int)ScalableSettingLevelParameter.Level.High;
                 EditorGUILayout.PropertyField(serialized.renderPipelineSettings.lightingQualitySettings.ContactShadowSampleCount.GetArrayElementAtIndex(quality), k_ContactShadowsSampleCount);
             }
         }
@@ -840,7 +839,7 @@ namespace UnityEditor.Rendering.HighDefinition
             EditorGUILayout.PropertyField(serialized.availableMaterialQualityLevels);
             var v = EditorGUILayout.EnumPopup(k_MaterialQualityLevelContent, (MaterialQuality) serialized.defaultMaterialQualityLevel.intValue);
             serialized.defaultMaterialQualityLevel.intValue = (int)(object)v;
-            
+
             EditorGUILayout.PropertyField(serialized.renderPipelineSettings.supportDistortion, k_SupportDistortion);
 
             EditorGUILayout.PropertyField(serialized.renderPipelineSettings.supportSubsurfaceScattering, k_SupportedSSSContent);

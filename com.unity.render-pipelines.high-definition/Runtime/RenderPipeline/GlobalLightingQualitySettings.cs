@@ -5,27 +5,27 @@ namespace UnityEngine.Rendering.HighDefinition
     [Serializable]
     public sealed class GlobalLightingQualitySettings
     {
-        static int s_QualitySettingCount = Enum.GetNames(typeof(VolumeQualitySettingsLevels)).Length;
+        static int s_QualitySettingCount = Enum.GetNames(typeof(ScalableSettingLevelParameter.Level)).Length;
 
         public GlobalLightingQualitySettings()
         {
             /* Ambient Occlusion */
-            AOStepCount[(int)VolumeQualitySettingsLevels.Low] = 4;
-            AOStepCount[(int)VolumeQualitySettingsLevels.Medium] = 6;
-            AOStepCount[(int)VolumeQualitySettingsLevels.High] = 20;
+            AOStepCount[(int)ScalableSettingLevelParameter.Level.Low] = 4;
+            AOStepCount[(int)ScalableSettingLevelParameter.Level.Medium] = 6;
+            AOStepCount[(int)ScalableSettingLevelParameter.Level.High] = 20;
 
-            AOFullRes[(int)VolumeQualitySettingsLevels.Low] = false;
-            AOFullRes[(int)VolumeQualitySettingsLevels.Medium] = false;
-            AOFullRes[(int)VolumeQualitySettingsLevels.High] = true;
+            AOFullRes[(int)ScalableSettingLevelParameter.Level.Low] = false;
+            AOFullRes[(int)ScalableSettingLevelParameter.Level.Medium] = false;
+            AOFullRes[(int)ScalableSettingLevelParameter.Level.High] = true;
 
-            AOMaximumRadiusPixels[(int)VolumeQualitySettingsLevels.Low] = 24;
-            AOMaximumRadiusPixels[(int)VolumeQualitySettingsLevels.Medium] = 40;
-            AOMaximumRadiusPixels[(int)VolumeQualitySettingsLevels.High] = 80;
+            AOMaximumRadiusPixels[(int)ScalableSettingLevelParameter.Level.Low] = 24;
+            AOMaximumRadiusPixels[(int)ScalableSettingLevelParameter.Level.Medium] = 40;
+            AOMaximumRadiusPixels[(int)ScalableSettingLevelParameter.Level.High] = 80;
 
             /* Contact Shadow */
-            ContactShadowSampleCount[(int)VolumeQualitySettingsLevels.Low] = 4;
-            ContactShadowSampleCount[(int)VolumeQualitySettingsLevels.Medium] = 8;
-            ContactShadowSampleCount[(int)VolumeQualitySettingsLevels.High] = 16;
+            ContactShadowSampleCount[(int)ScalableSettingLevelParameter.Level.Low] = 4;
+            ContactShadowSampleCount[(int)ScalableSettingLevelParameter.Level.Medium] = 8;
+            ContactShadowSampleCount[(int)ScalableSettingLevelParameter.Level.High] = 16;
 
         }
 
@@ -45,7 +45,7 @@ namespace UnityEngine.Rendering.HighDefinition
         // TODO: Volumetric fog quality
 
         // TODO: Shadows. This needs to be discussed further as there is an idiosyncracy here as we have different level of quality settings,
-        //some for resolution per light (4 levels) some per volume (which are 3 levels everywhere). This needs to be discussed more.  
+        //some for resolution per light (4 levels) some per volume (which are 3 levels everywhere). This needs to be discussed more.
 
 
     }
