@@ -1023,7 +1023,7 @@ namespace UnityEngine.Rendering.HighDefinition
                 ComputeShader cs = defaultResources.shaders.resolveStencilCS;
                 int kernel = SampleCountToPassIndex(hdCamera.msaaSamples) - 1; // We start with kernel 0 being MSAA 2x
                 cmd.SetComputeTextureParam(cs, kernel, HDShaderIDs._StencilTexture, depthStencilBuffer, 0, RenderTextureSubElement.Stencil);
-                cmd.SetComputeTextureParam(cs, kernel, HDShaderIDs._OutputStencilTexture, resolvedStencilBuffer);
+                cmd.SetComputeTextureParam(cs, kernel, HDShaderIDs._OutputStencilBuffer, resolvedStencilBuffer);
                 cmd.DispatchCompute(cs, kernel, (hdCamera.actualWidth + 7) / 8, (hdCamera.actualHeight + 7) / 8, hdCamera.viewCount);
             }
         }

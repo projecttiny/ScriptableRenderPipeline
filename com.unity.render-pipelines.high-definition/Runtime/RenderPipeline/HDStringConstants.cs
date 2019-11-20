@@ -262,7 +262,7 @@ namespace UnityEngine.Rendering.HighDefinition
         public static readonly int _StencilTexture = Shader.PropertyToID("_StencilTexture");
 
         // Used in the stencil resolve pass
-        public static readonly int _OutputStencilTexture = Shader.PropertyToID("_OutputStencilTexture");
+        public static readonly int _OutputStencilBuffer = Shader.PropertyToID("_OutputStencilBuffer");
 
         // all decal properties
         public static readonly int _NormalToWorldID = Shader.PropertyToID("_NormalToWorld");
