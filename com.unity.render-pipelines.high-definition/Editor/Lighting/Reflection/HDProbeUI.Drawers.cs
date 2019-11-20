@@ -21,7 +21,8 @@ namespace UnityEditor.Rendering.HighDefinition
             NormalBlend = 1 << 2,
             CapturePosition = 1 << 3,
             MirrorPosition = 1 << 4,
-            MirrorRotation = 1 << 5
+            MirrorRotation = 1 << 5,
+            ShowChromeGizmo = 1 << 6, //not really an edit mode. Should be move later to contextual tool overlay
         }
 
         internal interface IProbeUISettingsProvider
@@ -87,8 +88,15 @@ namespace UnityEditor.Rendering.HighDefinition
                         var toolbarJ = (ToolBar)(1 << j);
                         if ((toolBar & toolbarJ) > 0)
                         {
-                            listMode.Add(k_ToolbarMode[toolbarJ]);
-                            listContent.Add(k_ToolbarContents[toolbarJ]);
+                            if (toolBar == ToolBar.ShowChromeGizmo)
+                            {
+                                listContent.Add(k_ToolbarContents[toolbarJ]);
+                            }
+                            else
+                            {
+                                listMode.Add(k_ToolbarMode[toolbarJ]);
+                                listContent.Add(k_ToolbarContents[toolbarJ]);
+                            }
                         }
                     }
                     k_ListContent[i] = listContent.ToArray();
@@ -106,13 +114,30 @@ namespace UnityEditor.Rendering.HighDefinition
                 GUILayout.FlexibleSpace();
                 GUI.changed = false;
 
-                for (int i = 0; i < k_ListModes.Length; ++i)
+                for (int i = 0; i < k_ListModes.Length - 1; ++i)
                     EditMode.DoInspectorToolbar(k_ListModes[i], k_ListContent[i], HDEditorUtils.GetBoundsGetter(owner), owner);
+
+                //Special case: show chrome gizmo should be mouved to overlay tool.
+                //meanwhile, display it as an option of toolbar
+                EditorGUI.BeginChangeCheck();
+                IHDProbeEditor probeEditor = owner as IHDProbeEditor;
+                int selected = probeEditor.showChromeGizmo ? 0 : -1;
+                int newSelected = GUILayout.Toolbar(selected, new[] { k_ListContent[k_ListModes.Length - 1][0] }, GUILayout.Height(20), GUILayout.Width(30));
+                if(EditorGUI.EndChangeCheck())
+                {
+                    //allow deselection
+                    if (selected >= 0 && newSelected == selected)
+                        selected = -1;
+                    else
+                        selected = newSelected;
+                    probeEditor.showChromeGizmo = selected == 0;
+                    SceneView.RepaintAll();
+                }
 
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
             }
-
+            
             public static void DoToolbarShortcutKey(Editor owner)
             {
                 var provider = new TProvider();

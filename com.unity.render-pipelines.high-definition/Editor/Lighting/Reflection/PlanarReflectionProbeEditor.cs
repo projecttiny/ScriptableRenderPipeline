@@ -282,7 +282,8 @@ namespace UnityEditor.Rendering.HighDefinition
         static readonly HDProbeUI.ToolBar[] k_Toolbars =
         {
             HDProbeUI.ToolBar.InfluenceShape | HDProbeUI.ToolBar.Blend,
-            HDProbeUI.ToolBar.MirrorPosition | HDProbeUI.ToolBar.MirrorRotation
+            HDProbeUI.ToolBar.MirrorPosition | HDProbeUI.ToolBar.MirrorRotation,
+            HDProbeUI.ToolBar.ShowChromeGizmo
         };
         HDProbeUI.ToolBar[] HDProbeUI.IProbeUISettingsProvider.toolbars => k_Toolbars;
 

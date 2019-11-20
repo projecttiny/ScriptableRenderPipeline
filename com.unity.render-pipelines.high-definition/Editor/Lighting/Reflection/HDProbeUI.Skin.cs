@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEditor.Rendering;
 using UnityEngine;
 
 namespace UnityEditor.Rendering.HighDefinition
@@ -26,12 +25,13 @@ namespace UnityEditor.Rendering.HighDefinition
 
         static readonly Dictionary<ToolBar, GUIContent> k_ToolbarContents = new Dictionary<ToolBar, GUIContent>
         {
-            { ToolBar.InfluenceShape,  EditorGUIUtility.TrIconContent("EditCollider", "Modify the base shape. (SHIFT+1)") },
-            { ToolBar.Blend,  EditorGUIUtility.TrIconContent("PreMatCube", "Modify the influence volume. (SHIFT+2)") },
-            { ToolBar.NormalBlend,  EditorGUIUtility.TrIconContent("SceneViewOrtho", "Modify the influence normal volume. (SHIFT+3)") },
+            { ToolBar.InfluenceShape,  EditorGUIUtility.TrIconContent("EditCollider", "Modify the base shape.") },
+            { ToolBar.Blend,  EditorGUIUtility.TrIconContent("PreMatCube", "Modify the influence volume.") },
+            { ToolBar.NormalBlend,  EditorGUIUtility.TrIconContent("SceneViewOrtho", "Modify the influence normal volume.") },
             { ToolBar.CapturePosition,  EditorGUIUtility.TrIconContent("MoveTool", "Change the capture position.") },
             { ToolBar.MirrorPosition,  EditorGUIUtility.TrIconContent("MoveTool", "Change the mirror position.") },
-            { ToolBar.MirrorRotation,  EditorGUIUtility.TrIconContent("RotateTool", "Change the mirror rotation.") }
+            { ToolBar.MirrorRotation,  EditorGUIUtility.TrIconContent("RotateTool", "Change the mirror rotation.") },
+            { ToolBar.ShowChromeGizmo,  EditorGUIUtility.TrIconContent("ReflectionProbe Gizmo", "Display the chrome gizmo.") },
         };
     }
 }

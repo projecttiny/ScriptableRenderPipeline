@@ -12,6 +12,8 @@ namespace UnityEditor.Rendering.HighDefinition
     {
         Object target { get; }
         HDProbe GetTarget(Object editorTarget);
+
+        bool showChromeGizmo { get; set; }
     }
 
     abstract class HDProbeEditor<TProvider, TSerialized> : Editor, IHDProbeEditor
@@ -30,8 +32,6 @@ namespace UnityEditor.Rendering.HighDefinition
         Dictionary<Object, TSerialized> m_SerializedHDProbePerTarget;
         protected HDProbe[] m_TypedTargets;
 
-        protected bool showChromeGizmo { get; private set; }
-
         public override void OnInspectorGUI()
         {
             m_SerializedHDProbe.Update();
@@ -41,10 +41,24 @@ namespace UnityEditor.Rendering.HighDefinition
                 m_SerializedHDProbe.Apply();
         }
 
+        const string k_ShowChromeGizmoKey = "HDRP:ReflectionProbe:ChromeGizmo";
+        static bool m_ShowChromeGizmo = true;
+        public bool showChromeGizmo
+        {
+            get => m_ShowChromeGizmo;
+            set
+            {
+                m_ShowChromeGizmo = value;
+                EditorPrefs.SetBool(k_ShowChromeGizmoKey, value);
+            }
+        }
+
         protected virtual void OnEnable()
         {
             m_SerializedHDProbe = NewSerializedObject(serializedObject);
-            showChromeGizmo = true;
+
+            if (EditorPrefs.HasKey(k_ShowChromeGizmoKey))
+                m_ShowChromeGizmo = EditorPrefs.GetBool(k_ShowChromeGizmoKey);
 
             m_SerializedHDProbePerTarget = new Dictionary<Object, TSerialized>(targets.Length);
             m_TypedTargets = new HDProbe[targets.Length];
@@ -71,10 +85,7 @@ namespace UnityEditor.Rendering.HighDefinition
         protected virtual void Draw(TSerialized serialized, Editor owner)
         {
             HDProbeUI.Drawer<TProvider>.DrawToolbars(serialized, owner);
-            EditorGUI.BeginChangeCheck();
-            showChromeGizmo = EditorGUILayout.Toggle(EditorGUIUtility.TrTextContent("Show Chrome Gizmo"), showChromeGizmo);
-            if (EditorGUI.EndChangeCheck())
-                SceneView.RepaintAll();
+
             HDProbeUI.Drawer<TProvider>.DrawPrimarySettings(serialized, owner);
 
             //note: cannot use 'using CED = something' due to templated type passed.

@@ -102,8 +102,12 @@ namespace UnityEditor.Rendering.HighDefinition
         };
 
         Type HDProbeUI.IProbeUISettingsProvider.customTextureType => typeof(Cubemap);
-        static readonly HDProbeUI.ToolBar[] k_ToolBars
-        = { HDProbeUI.ToolBar.InfluenceShape | HDProbeUI.ToolBar.NormalBlend | HDProbeUI.ToolBar.Blend, HDProbeUI.ToolBar.CapturePosition };
+        static readonly HDProbeUI.ToolBar[] k_ToolBars =
+        {
+            HDProbeUI.ToolBar.InfluenceShape | HDProbeUI.ToolBar.NormalBlend | HDProbeUI.ToolBar.Blend,
+            HDProbeUI.ToolBar.CapturePosition,
+            HDProbeUI.ToolBar.ShowChromeGizmo
+        };
         HDProbeUI.ToolBar[] HDProbeUI.IProbeUISettingsProvider.toolbars => k_ToolBars;
 
         static Dictionary<KeyCode, HDProbeUI.ToolBar> k_ToolbarShortCutKey = new Dictionary<KeyCode, HDProbeUI.ToolBar>
