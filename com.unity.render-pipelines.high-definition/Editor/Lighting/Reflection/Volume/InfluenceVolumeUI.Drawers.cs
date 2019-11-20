@@ -193,9 +193,11 @@ namespace UnityEditor.Rendering.HighDefinition
             }
             else
             {
+                Rect lineRect = EditorGUILayout.GetControlRect();
+                EditorGUI.BeginProperty(lineRect, content, editorSimplifiedModeBlendDistance);
                 float distance = editorSimplifiedModeBlendDistance.floatValue;
                 EditorGUI.BeginChangeCheck();
-                distance = EditorGUILayout.FloatField(content, distance);
+                distance = EditorGUI.FloatField(lineRect, content, distance);
                 if (EditorGUI.EndChangeCheck())
                 {
                     distance = Mathf.Clamp(distance, 0f, Mathf.Max(maxBlendDistance.x, maxBlendDistance.y, maxBlendDistance.z));
@@ -210,6 +212,7 @@ namespace UnityEditor.Rendering.HighDefinition
                     blendDistanceNegative.vector3Value = bdn;
                     editorSimplifiedModeBlendDistance.floatValue = distance;
                 }
+                EditorGUI.EndProperty();
             }
         }
 
