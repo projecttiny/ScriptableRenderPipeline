@@ -156,8 +156,8 @@ namespace UnityEditor.Rendering.HighDefinition
             //resync to be sure prefab revert will keep syncs
             if (serialized.editorAdvancedModeEnabled.boolValue)
             {
-                if (Mathf.Approximately(Vector3.SqrMagnitude(blendDistancePositive.vector3Value - editorAdvancedModeBlendDistancePositive.vector3Value), 0f)
-                    || Mathf.Approximately(Vector3.SqrMagnitude(blendDistanceNegative.vector3Value - editorAdvancedModeBlendDistanceNegative.vector3Value), 0f))
+                if (!(Mathf.Approximately(Vector3.SqrMagnitude(blendDistancePositive.vector3Value - editorAdvancedModeBlendDistancePositive.vector3Value), 0f)
+                    && Mathf.Approximately(Vector3.SqrMagnitude(blendDistanceNegative.vector3Value - editorAdvancedModeBlendDistanceNegative.vector3Value), 0f)))
                 {
                     blendDistancePositive.vector3Value = editorAdvancedModeBlendDistancePositive.vector3Value;
                     blendDistanceNegative.vector3Value = editorAdvancedModeBlendDistanceNegative.vector3Value;
@@ -168,12 +168,12 @@ namespace UnityEditor.Rendering.HighDefinition
             else
             {
                 float scalar = editorSimplifiedModeBlendDistance.floatValue;
-                if (Mathf.Approximately(blendDistancePositive.vector3Value.x, scalar)
-                    || Mathf.Approximately(blendDistancePositive.vector3Value.y, scalar)
-                    || Mathf.Approximately(blendDistancePositive.vector3Value.z, scalar)
-                    || Mathf.Approximately(blendDistanceNegative.vector3Value.x, scalar)
-                    || Mathf.Approximately(blendDistanceNegative.vector3Value.y, scalar)
-                    || Mathf.Approximately(blendDistanceNegative.vector3Value.z, scalar))
+                if (!(Mathf.Approximately(blendDistancePositive.vector3Value.x, scalar)
+                    && Mathf.Approximately(blendDistancePositive.vector3Value.y, scalar)
+                    && Mathf.Approximately(blendDistancePositive.vector3Value.z, scalar)
+                    && Mathf.Approximately(blendDistanceNegative.vector3Value.x, scalar)
+                    && Mathf.Approximately(blendDistanceNegative.vector3Value.y, scalar)
+                    && Mathf.Approximately(blendDistanceNegative.vector3Value.z, scalar)))
                 {
                     blendDistancePositive.vector3Value = blendDistanceNegative.vector3Value = new Vector3(scalar, scalar, scalar);
                     serialized.Apply();
