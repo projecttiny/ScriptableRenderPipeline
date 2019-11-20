@@ -80,6 +80,8 @@ namespace UnityEngine.Rendering.HighDefinition
             // General
             [Reload("Runtime/RenderPipeline/RenderPass/MotionVectors/CameraMotionVectors.shader")]
             public Shader cameraMotionVectorsPS;
+            [Reload("Runtime/ShaderLibrary/CopyStencilBuffer.shader")]
+            public Shader copyStencilBufferPS;
             [Reload("Runtime/ShaderLibrary/CopyDepthBuffer.shader")]
             public Shader copyDepthBufferPS;
             [Reload("Runtime/ShaderLibrary/Blit.shader")]
