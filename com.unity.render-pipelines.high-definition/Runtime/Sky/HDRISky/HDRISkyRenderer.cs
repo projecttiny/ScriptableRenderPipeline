@@ -41,9 +41,9 @@ namespace UnityEngine.Rendering.HighDefinition
             // xy: scale, z: groundLevel, w: projectionDistance
             float scaleX = Mathf.Abs(hdriSky.scale.value.x);
             float scaleY = Mathf.Abs(hdriSky.scale.value.y);
-            if (hdriSky.backplateType.value == BackplateType.Ellipse && Mathf.Abs(scaleX - scaleY) < 1e-4f)
+            if (hdriSky.backplateType.value == BackplateType.Ellipse && Mathf.Abs(scaleX - scaleY) < 1e-2f)
             {
-                scaleY += 1e-4f;
+                scaleY += 1e-2f;
             }
             if (hdriSky.backplateType.value == BackplateType.Disc)
             {
