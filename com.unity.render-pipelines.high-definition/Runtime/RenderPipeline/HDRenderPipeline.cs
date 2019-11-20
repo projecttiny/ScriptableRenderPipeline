@@ -1015,6 +1015,19 @@ namespace UnityEngine.Rendering.HighDefinition
             }
         }
 
+        void ResolveStencilBufferIfNeeded(HDCamera hdCamera, CommandBuffer cmd)
+        {
+            bool isMSAAEnabled = hdCamera.frameSettings.IsEnabled(FrameSettingsField.MSAA);
+            if(isMSAAEnabled)
+            {
+                ComputeShader cs = defaultResources.shaders.resolveStencilCS;
+                int kernel = SampleCountToPassIndex(hdCamera.msaaSamples) - 1; // We start with kernel 0 being MSAA 2x
+                cmd.SetComputeTextureParam(cs, kernel, HDShaderIDs._StencilTexture, m_SharedRTManager.GetDepthStencilBuffer(), 0, RenderTextureSubElement.Stencil);
+                cmd.SetComputeTextureParam(cs, kernel, HDShaderIDs._OutputStencilTexture, m_SharedRTManager.GetDepthStencilBuffer(true));
+                cmd.DispatchCompute(cs, kernel, (hdCamera.actualWidth + 7) / 8, (hdCamera.actualHeight + 7) / 8, hdCamera.viewCount);
+            }
+        }
+
         void SetMicroShadowingSettings(CommandBuffer cmd)
         {
             MicroShadowing microShadowingSettings = VolumeManager.instance.stack.GetComponent<MicroShadowing>();
@@ -1975,11 +1988,14 @@ namespace UnityEngine.Rendering.HighDefinition
             }
             else
             {
+
                 // When debug is enabled we need to clear otherwise we may see non-shadows areas with stale values.
                 if (hdCamera.frameSettings.IsEnabled(FrameSettingsField.ContactShadows) && m_CurrentDebugDisplaySettings.data.fullScreenDebugMode == FullScreenDebugMode.ContactShadows)
                 {
                     CoreUtils.SetRenderTarget(cmd, m_ContactShadowBuffer, ClearFlag.Color, Color.clear);
                 }
+
+                ResolveStencilBufferIfNeeded(hdCamera, cmd);
 
                 hdCamera.xr.StopSinglePass(cmd, camera, renderContext);
 
@@ -3659,7 +3675,7 @@ namespace UnityEngine.Rendering.HighDefinition
 
                 if(stencilBuffer.rt.stencilFormat == GraphicsFormat.None)
                 {
-                    Debug.Assert(false, "TODO BEFORE PR: FIX MSAA");
+                    cmd.SetComputeTextureParam(cs, parameters.tracingKernel, HDShaderIDs._StencilTexture, stencilBuffer);
                 }
                 else
                 {
@@ -3707,8 +3723,7 @@ namespace UnityEngine.Rendering.HighDefinition
                 RTHandle clearCoatMask = hdCamera.frameSettings.litShaderMode == LitShaderMode.Deferred ? m_GbufferManager.GetBuffer(2) : TextureXR.GetBlackTexture();
 
                 var parameters = PrepareSSRParameters(hdCamera);
-                // TODO TODO TODO TODO_FCC: BEFORE PR MAKE MSAA supported.
-                RenderSSR(parameters, m_SharedRTManager.GetDepthTexture(), m_SsrHitPointTexture, m_SharedRTManager.GetDepthStencilBuffer(false), clearCoatMask, previousColorPyramid, m_SsrLightingTexture, cmd, renderContext);
+                RenderSSR(parameters, m_SharedRTManager.GetDepthTexture(), m_SsrHitPointTexture, m_SharedRTManager.GetStencilBuffer(hdCamera.frameSettings.IsEnabled(FrameSettingsField.MSAA)), clearCoatMask, previousColorPyramid, m_SsrLightingTexture, cmd, renderContext);
 
             	if (!hdCamera.colorPyramidHistoryIsValid)
             	{

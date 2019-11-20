@@ -8,6 +8,9 @@ namespace UnityEngine.Rendering.HighDefinition
         RTHandle m_NormalRT = null;
         RTHandle m_MotionVectorsRT = null;
         RTHandle m_CameraDepthStencilBuffer = null;
+        // Passes like SSR read the stencil per pixel and not per sample, hence we need a resolved version.
+        // The best we can do for resolve is an OR of all samples, however this is inaccurate by nature. 
+        RTHandle m_StencilBufferResolved = null;
         RTHandle m_CameraDepthBufferMipChain;
         RTHandle m_CameraHalfResDepthBuffer = null;
         HDUtils.PackedMipChainInfo m_CameraDepthBufferMipChainInfo; // This is metadata
@@ -81,6 +84,7 @@ namespace UnityEngine.Rendering.HighDefinition
                 m_CameraDepthStencilMSAABuffer = RTHandles.Alloc(Vector2.one, TextureXR.slices, DepthBits.Depth24, dimension: TextureXR.dimension, bindTextureMS: true, enableMSAA: true, useDynamicScale: true, name: "CameraDepthStencilMSAA");
                 m_CameraDepthValuesBuffer = RTHandles.Alloc(Vector2.one, TextureXR.slices, colorFormat: GraphicsFormat.R32G32B32A32_SFloat, dimension: TextureXR.dimension, useDynamicScale: true, name: "DepthValuesBuffer");
                 m_DepthAsColorMSAART = RTHandles.Alloc(Vector2.one, TextureXR.slices, colorFormat: GraphicsFormat.R32_SFloat, dimension: TextureXR.dimension, bindTextureMS: true, enableMSAA: true, useDynamicScale: true, name: "DepthAsColorMSAA");
+                m_StencilBufferResolved = RTHandles.Alloc(Vector2.one, TextureXR.slices, colorFormat: GraphicsFormat.R8_UInt, dimension: TextureXR.dimension, enableRandomWrite: true, useDynamicScale: true, name: "StencilBufferResolved");
 
                 // We need to allocate this texture as long as msaa is supported because on both mode, one of the cameras can be forward only using the framesettings
                 m_NormalMSAART = RTHandles.Alloc(Vector2.one, TextureXR.slices, colorFormat: GraphicsFormat.R8G8B8A8_UNorm, dimension: TextureXR.dimension, enableMSAA: true, bindTextureMS: true, useDynamicScale: true, name: "NormalBufferMSAA");
@@ -186,6 +190,19 @@ namespace UnityEngine.Rendering.HighDefinition
             {
                 Debug.Assert(m_MSAASupported);
                 return m_CameraDepthStencilMSAABuffer;
+            }
+            else
+            {
+                return m_CameraDepthStencilBuffer;
+            }
+        }
+
+        public RTHandle GetStencilBuffer(bool isMSAA = false)
+        {
+            if (isMSAA)
+            {
+                Debug.Assert(m_MSAASupported);
+                return m_StencilBufferResolved;
             }
             else
             {

@@ -80,8 +80,6 @@ namespace UnityEngine.Rendering.HighDefinition
             // General
             [Reload("Runtime/RenderPipeline/RenderPass/MotionVectors/CameraMotionVectors.shader")]
             public Shader cameraMotionVectorsPS;
-            [Reload("Runtime/ShaderLibrary/CopyStencilBuffer.shader")]
-            public Shader copyStencilBufferPS;
             [Reload("Runtime/ShaderLibrary/CopyDepthBuffer.shader")]
             public Shader copyDepthBufferPS;
             [Reload("Runtime/ShaderLibrary/Blit.shader")]
@@ -91,6 +89,9 @@ namespace UnityEngine.Rendering.HighDefinition
             public Shader downsampleDepthPS;
             [Reload("Runtime/ShaderLibrary/UpsampleTransparent.shader")]
             public Shader upsampleTransparentPS;
+
+            [Reload("Runtime/ShaderLibrary/ResolveStencilBuffer.compute")]
+            public ComputeShader resolveStencilCS;
 
             // Sky
             [Reload("Runtime/Sky/BlitCubemap.shader")]
