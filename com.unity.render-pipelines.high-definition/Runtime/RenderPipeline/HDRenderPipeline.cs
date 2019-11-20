@@ -1017,8 +1017,16 @@ namespace UnityEngine.Rendering.HighDefinition
 
         void ResolveStencilBufferIfNeeded(HDCamera hdCamera, RTHandle depthStencilBuffer, RTHandle resolvedStencilBuffer, CommandBuffer cmd)
         {
-            bool isMSAAEnabled = hdCamera.frameSettings.IsEnabled(FrameSettingsField.MSAA);
-            if(isMSAAEnabled)
+            bool MSAAEnabled = hdCamera.frameSettings.IsEnabled(FrameSettingsField.MSAA);
+
+            // The following features require a copy of the stencil, if none are active, no need to do the resolve.
+            bool resolveIsNecessary = GetFeatureVariantsEnabled(hdCamera.frameSettings);
+            resolveIsNecessary = resolveIsNecessary || hdCamera.frameSettings.IsEnabled(FrameSettingsField.SSR);
+
+            // We need the resolve only with msaa
+            resolveIsNecessary = resolveIsNecessary && MSAAEnabled;
+
+            if (resolveIsNecessary)
             {
                 ComputeShader cs = defaultResources.shaders.resolveStencilCS;
                 int kernel = SampleCountToPassIndex(hdCamera.msaaSamples) - 1; // We start with kernel 0 being MSAA 2x

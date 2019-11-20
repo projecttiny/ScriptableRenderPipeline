@@ -472,7 +472,7 @@ namespace UnityEngine.Rendering.HighDefinition
                 using (var builder = renderGraph.AddRenderPass<ResolveStencilPassData>("Resolve Stencil", out var passData, CustomSamplerId.ResolveStencilBuffer.GetSampler()))
                 {
                     passData.inputDepth = output.depthBuffer;
-                    passData.outputStencil = builder.WriteTexture(renderGraph.CreateTexture(new TextureDesc(Vector2.one, true, true) { colorFormat = GraphicsFormat.R8_UInt, name = "StencilBufferResolved" }));
+                    passData.outputStencil = builder.WriteTexture(renderGraph.CreateTexture(new TextureDesc(Vector2.one, true, true) { colorFormat = GraphicsFormat.R8G8_UInt, name = "StencilBufferResolved" }));
                     builder.SetRenderFunc(
                        (ResolveStencilPassData data, RenderGraphContext context) =>
                        {
