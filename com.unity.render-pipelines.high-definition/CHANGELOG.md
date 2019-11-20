@@ -165,6 +165,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed minor naming issues in ShaderGraph settings
 - VFX: Removed z-fight glitches that could appear when using deferred depth prepass and lit quad primitives
 - VFX: Preserve specular option for lit outputs (matches HDRP lit shader)
+- Fixed persistence of ShowChromeGizmo and moved it to toolbar for coherency in ReflectionProbe and PlanarReflectionProbe.
+- Fixed Alignement issue in ReflectionProbe and PlanarReflectionProbe.
+- Fixed Prefab override workflow issue in ReflectionProbe and PlanarReflectionProbe.
+- Fixed empty MoreOptions and moved AdvancedManipulation in a dedicated location for coherency in ReflectionProbe and PlanarReflectionProbe.
 
 ### Changed
 - Color buffer pyramid is not allocated anymore if neither refraction nor distortion are enabled
