@@ -160,6 +160,8 @@ namespace UnityEditor.Rendering.HighDefinition
                         serializedObject.ApplyModifiedProperties();
                     }
                     material.SetInt("_SpecularOcclusionMode", specOcclusionMode);
+
+                    HDShaderUtils.ResetMaterialKeywords(material);
                     break;
             }
         }
